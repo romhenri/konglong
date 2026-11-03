@@ -1,0 +1,511 @@
+@prefix dino: <http://example.org/dino#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# =====================================================================
+# Ontologia de Dinossauros, clados e tempo geologico
+# =====================================================================
+
+<http://example.org/dino> a owl:Ontology ;
+    rdfs:label "Dinossauros e Clados"@pt ;
+    rdfs:comment "Base de conhecimento sobre dinossauros: taxonomia por clados, intervalos geologicos (Era > Periodo > Epoca), formacoes onde foram encontrados e paleontologos que os descreveram."@pt .
+
+# =====================================================================
+# CLASSES: taxonomia de dinossauros (clados)
+# Raiz: Dinossauro. Profundidade maxima: 3 niveis abaixo da raiz
+# (Dinossauro > Saurischia > Theropoda > Tyrannosauridae).
+# Especies sao modeladas como individuos da classe do clado mais
+# especifico conhecido; a pertinencia aos clados superiores e inferida
+# por rdfs:subClassOf.
+# =====================================================================
+
+dino:Dinossauro a owl:Class ;
+    rdfs:label "Dinossauro"@pt ;
+    rdfs:comment "Clado Dinosauria: ultimo ancestral comum de Triceratops e aves modernas e todos os seus descendentes."@pt .
+
+# --- Saurischia ("quadril de lagarto") --------------------------------
+dino:Saurischia a owl:Class ;
+    rdfs:subClassOf dino:Dinossauro ;
+    rdfs:label "Saurischia"@pt ;
+    rdfs:comment "Dinossauros com pube voltado para frente (quadril de lagarto)."@pt .
+
+dino:Theropoda a owl:Class ;
+    rdfs:subClassOf dino:Saurischia ;
+    rdfs:label "Theropoda"@pt ;
+    rdfs:comment "Saurisquios bipedes, em sua maioria carnivoros; inclui as aves."@pt .
+
+dino:Tyrannosauridae a owl:Class ;
+    rdfs:subClassOf dino:Theropoda ;
+    rdfs:label "Tyrannosauridae"@pt .
+
+dino:Dromaeosauridae a owl:Class ;
+    rdfs:subClassOf dino:Theropoda ;
+    rdfs:label "Dromaeosauridae"@pt ;
+    rdfs:comment "Teropodes 'raptores', com garra em foice no segundo dedo do pe."@pt .
+
+dino:Spinosauridae a owl:Class ;
+    rdfs:subClassOf dino:Theropoda ;
+    rdfs:label "Spinosauridae"@pt ;
+    rdfs:comment "Teropodes de focinho alongado, adaptados a captura de peixes."@pt .
+
+dino:Allosauroidea a owl:Class ;
+    rdfs:subClassOf dino:Theropoda ;
+    rdfs:label "Allosauroidea"@pt .
+
+dino:Sauropodomorpha a owl:Class ;
+    rdfs:subClassOf dino:Saurischia ;
+    rdfs:label "Sauropodomorpha"@pt ;
+    rdfs:comment "Saurisquios herbivoros de pescoco longo."@pt .
+
+dino:Sauropoda a owl:Class ;
+    rdfs:subClassOf dino:Sauropodomorpha ;
+    rdfs:label "Sauropoda"@pt ;
+    rdfs:comment "Sauropodomorfos quadrupedes gigantes."@pt .
+
+# --- Ornithischia ("quadril de ave") ----------------------------------
+dino:Ornithischia a owl:Class ;
+    rdfs:subClassOf dino:Dinossauro ;
+    rdfs:label "Ornithischia"@pt ;
+    rdfs:comment "Dinossauros com pube voltado para tras (quadril de ave); predominantemente herbivoros."@pt .
+
+dino:Ornithopoda a owl:Class ;
+    rdfs:subClassOf dino:Ornithischia ;
+    rdfs:label "Ornithopoda"@pt .
+
+dino:Ceratopsia a owl:Class ;
+    rdfs:subClassOf dino:Ornithischia ;
+    rdfs:label "Ceratopsia"@pt ;
+    rdfs:comment "Ornitisquios com bico rostral e, em geral, chifres e babados."@pt .
+
+dino:Thyreophora a owl:Class ;
+    rdfs:subClassOf dino:Ornithischia ;
+    rdfs:label "Thyreophora"@pt ;
+    rdfs:comment "Ornitisquios encouracados."@pt .
+
+dino:Stegosauria a owl:Class ;
+    rdfs:subClassOf dino:Thyreophora ;
+    rdfs:label "Stegosauria"@pt .
+
+dino:Ankylosauria a owl:Class ;
+    rdfs:subClassOf dino:Thyreophora ;
+    rdfs:label "Ankylosauria"@pt .
+
+# OWL 1: Saurischia e Ornithischia sao as duas linhagens que dividem
+# Dinosauria; nenhuma especie pertence as duas.
+dino:Saurischia owl:disjointWith dino:Ornithischia .
+
+# OWL 2: classe definida. Predador e qualquer dinossauro com ao menos
+# um registro de predacao sobre outro dinossauro (necessario e suficiente).
+dino:Predador a owl:Class ;
+    rdfs:subClassOf dino:Dinossauro ;
+    rdfs:label "Predador"@pt ;
+    owl:equivalentClass [
+        a owl:Restriction ;
+        owl:onProperty dino:predouSobre ;
+        owl:someValuesFrom dino:Dinossauro
+    ] .
+
+# =====================================================================
+# CLASSES: tempo geologico
+# =====================================================================
+
+dino:IntervaloGeologico a owl:Class ;
+    rdfs:label "Intervalo geologico"@pt ;
+    rdfs:comment "Unidade da escala de tempo geologico (ICS)."@pt .
+
+dino:Era a owl:Class ;
+    rdfs:subClassOf dino:IntervaloGeologico ;
+    rdfs:label "Era"@pt .
+
+dino:Periodo a owl:Class ;
+    rdfs:subClassOf dino:IntervaloGeologico ;
+    rdfs:label "Periodo"@pt .
+
+dino:Epoca a owl:Class ;
+    rdfs:subClassOf dino:IntervaloGeologico ;
+    rdfs:label "Epoca"@pt .
+
+# OWL 3: um intervalo tem uma unica posicao hierarquica na escala.
+[] a owl:AllDisjointClasses ;
+    owl:members ( dino:Era dino:Periodo dino:Epoca ) .
+
+# =====================================================================
+# CLASSES: contexto (onde e por quem)
+# =====================================================================
+
+dino:FormacaoGeologica a owl:Class ;
+    rdfs:label "Formacao geologica"@pt ;
+    rdfs:comment "Unidade rochosa onde fosseis foram encontrados."@pt .
+
+dino:Pais a owl:Class ;
+    rdfs:label "Pais"@pt .
+
+dino:Paleontologo a owl:Class ;
+    rdfs:label "Paleontologo"@pt .
+
+# =====================================================================
+# PROPRIEDADES DE OBJETO
+# =====================================================================
+
+# OWL 4: subperiodoDe e transitiva. Jurassico Superior subperiodoDe
+# Jurassico, Jurassico subperiodoDe Mesozoico  =>  Jurassico Superior
+# subperiodoDe Mesozoico.
+dino:subperiodoDe a owl:ObjectProperty , owl:TransitiveProperty ;
+    rdfs:label "subperiodo de"@pt ;
+    rdfs:domain dino:IntervaloGeologico ;
+    rdfs:range dino:IntervaloGeologico .
+
+dino:temSubperiodo a owl:ObjectProperty ;
+    rdfs:label "tem subperiodo"@pt ;
+    owl:inverseOf dino:subperiodoDe ;
+    rdfs:domain dino:IntervaloGeologico ;
+    rdfs:range dino:IntervaloGeologico .
+
+# OWL 5: cadeia de propriedades. Quem viveu numa epoca viveu tambem no
+# periodo e na era que a contem: viveuEm o subperiodoDe -> viveuEm.
+# (Equivale a "viveuEm transitiva ao longo da escala de tempo", mas
+# respeitando domain Dinossauro / range IntervaloGeologico.)
+dino:viveuEm a owl:ObjectProperty ;
+    rdfs:label "viveu em"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range dino:IntervaloGeologico ;
+    owl:propertyChainAxiom ( dino:viveuEm dino:subperiodoDe ) .
+
+dino:encontradoEm a owl:ObjectProperty ;
+    rdfs:label "encontrado em"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range dino:FormacaoGeologica .
+
+# OWL 6: cada formacao (nesta base) pertence a um unico pais.
+dino:localizadaEm a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "localizada em"@pt ;
+    rdfs:domain dino:FormacaoGeologica ;
+    rdfs:range dino:Pais .
+
+dino:formacaoDatadaEm a owl:ObjectProperty ;
+    rdfs:label "formacao datada em"@pt ;
+    rdfs:domain dino:FormacaoGeologica ;
+    rdfs:range dino:IntervaloGeologico .
+
+# OWL 7: descritoPor / descreveu sao inversas.
+dino:descritoPor a owl:ObjectProperty ;
+    rdfs:label "descrito por"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range dino:Paleontologo .
+
+dino:descreveu a owl:ObjectProperty ;
+    rdfs:label "descreveu"@pt ;
+    owl:inverseOf dino:descritoPor ;
+    rdfs:domain dino:Paleontologo ;
+    rdfs:range dino:Dinossauro .
+
+# OWL 8: predacao so e registrada para teropodes; presaDe e a inversa.
+# Assimetrica: se A predou B, B nao predou A (nao ha registro fossil de
+# predacao reciproca entre as especies da base).
+dino:predouSobre a owl:ObjectProperty , owl:AsymmetricProperty ;
+    rdfs:label "predou sobre"@pt ;
+    rdfs:comment "Ha evidencia fossil (marcas de mordida, associacao direta) de predacao."@pt ;
+    rdfs:domain dino:Theropoda ;
+    rdfs:range dino:Dinossauro .
+
+dino:presaDe a owl:ObjectProperty ;
+    rdfs:label "presa de"@pt ;
+    owl:inverseOf dino:predouSobre ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range dino:Theropoda .
+
+# =====================================================================
+# PROPRIEDADES DE DADOS
+# =====================================================================
+
+# OWL 9: uma especie tem exatamente um nome cientifico valido.
+dino:nomeCientifico a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "nome cientifico"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range xsd:string .
+
+dino:comprimentoMetros a owl:DatatypeProperty ;
+    rdfs:label "comprimento (m)"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range xsd:decimal .
+
+dino:massaToneladas a owl:DatatypeProperty ;
+    rdfs:label "massa (t)"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range xsd:decimal .
+
+# Funcional: a descricao formal de uma especie ocorre em um unico ano.
+dino:anoDescricao a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "ano da descricao"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range xsd:integer .
+
+dino:dieta a owl:DatatypeProperty ;
+    rdfs:label "dieta"@pt ;
+    rdfs:domain dino:Dinossauro ;
+    rdfs:range xsd:string .
+
+dino:inicioMa a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "inicio (milhoes de anos atras)"@pt ;
+    rdfs:domain dino:IntervaloGeologico ;
+    rdfs:range xsd:decimal .
+
+dino:fimMa a owl:DatatypeProperty , owl:FunctionalProperty ;
+    rdfs:label "fim (milhoes de anos atras)"@pt ;
+    rdfs:domain dino:IntervaloGeologico ;
+    rdfs:range xsd:decimal .
+
+# =====================================================================
+# INDIVIDUOS: escala de tempo (datas ICS, em Ma)
+# =====================================================================
+
+dino:Mesozoico a dino:Era ;
+    rdfs:label "Mesozoico"@pt ; dino:inicioMa 251.9 ; dino:fimMa 66.0 .
+
+dino:Triassico a dino:Periodo ;
+    rdfs:label "Triassico"@pt ; dino:inicioMa 251.9 ; dino:fimMa 201.4 ;
+    dino:subperiodoDe dino:Mesozoico .
+
+dino:Jurassico a dino:Periodo ;
+    rdfs:label "Jurassico"@pt ; dino:inicioMa 201.4 ; dino:fimMa 143.1 ;
+    dino:subperiodoDe dino:Mesozoico .
+
+dino:Cretaceo a dino:Periodo ;
+    rdfs:label "Cretaceo"@pt ; dino:inicioMa 143.1 ; dino:fimMa 66.0 ;
+    dino:subperiodoDe dino:Mesozoico .
+
+dino:TriassicoSuperior a dino:Epoca ;
+    rdfs:label "Triassico Superior"@pt ; dino:inicioMa 237.0 ; dino:fimMa 201.4 ;
+    dino:subperiodoDe dino:Triassico .
+
+dino:JurassicoSuperior a dino:Epoca ;
+    rdfs:label "Jurassico Superior"@pt ; dino:inicioMa 161.5 ; dino:fimMa 143.1 ;
+    dino:subperiodoDe dino:Jurassico .
+
+dino:CretaceoInferior a dino:Epoca ;
+    rdfs:label "Cretaceo Inferior"@pt ; dino:inicioMa 143.1 ; dino:fimMa 100.5 ;
+    dino:subperiodoDe dino:Cretaceo .
+
+dino:CretaceoSuperior a dino:Epoca ;
+    rdfs:label "Cretaceo Superior"@pt ; dino:inicioMa 100.5 ; dino:fimMa 66.0 ;
+    dino:subperiodoDe dino:Cretaceo .
+
+# =====================================================================
+# INDIVIDUOS: paises e formacoes
+# =====================================================================
+
+dino:Brasil    a dino:Pais ; rdfs:label "Brasil"@pt .
+dino:Argentina a dino:Pais ; rdfs:label "Argentina"@pt .
+dino:EUA       a dino:Pais ; rdfs:label "Estados Unidos"@pt .
+dino:Mongolia  a dino:Pais ; rdfs:label "Mongolia"@pt .
+dino:Egito     a dino:Pais ; rdfs:label "Egito"@pt .
+dino:Belgica   a dino:Pais ; rdfs:label "Belgica"@pt .
+
+dino:HellCreek a dino:FormacaoGeologica ; rdfs:label "Formacao Hell Creek"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:Morrison a dino:FormacaoGeologica ; rdfs:label "Formacao Morrison"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:JurassicoSuperior .
+dino:Cloverly a dino:FormacaoGeologica ; rdfs:label "Formacao Cloverly"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:Djadochta a dino:FormacaoGeologica ; rdfs:label "Formacao Djadochta"@pt ;
+    dino:localizadaEm dino:Mongolia ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:Bahariya a dino:FormacaoGeologica ; rdfs:label "Formacao Bahariya"@pt ;
+    dino:localizadaEm dino:Egito ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:Romualdo a dino:FormacaoGeologica ; rdfs:label "Formacao Romualdo (Bacia do Araripe)"@pt ;
+    dino:localizadaEm dino:Brasil ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:SantaMaria a dino:FormacaoGeologica ; rdfs:label "Formacao Santa Maria"@pt ;
+    dino:localizadaEm dino:Brasil ; dino:formacaoDatadaEm dino:TriassicoSuperior .
+dino:Ischigualasto a dino:FormacaoGeologica ; rdfs:label "Formacao Ischigualasto"@pt ;
+    dino:localizadaEm dino:Argentina ; dino:formacaoDatadaEm dino:TriassicoSuperior .
+dino:Candeleros a dino:FormacaoGeologica ; rdfs:label "Formacao Candeleros"@pt ;
+    dino:localizadaEm dino:Argentina ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:Huincul a dino:FormacaoGeologica ; rdfs:label "Formacao Huincul"@pt ;
+    dino:localizadaEm dino:Argentina ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:SainteBarbe a dino:FormacaoGeologica ; rdfs:label "Argilas de Sainte-Barbe"@pt ;
+    dino:localizadaEm dino:Belgica ; dino:formacaoDatadaEm dino:CretaceoInferior .
+
+# =====================================================================
+# INDIVIDUOS: paleontologos
+# =====================================================================
+
+dino:OthnielMarsh      a dino:Paleontologo ; rdfs:label "Othniel C. Marsh"@pt .
+dino:HenryOsborn       a dino:Paleontologo ; rdfs:label "Henry F. Osborn"@pt .
+dino:BarnumBrown       a dino:Paleontologo ; rdfs:label "Barnum Brown"@pt .
+dino:JohnOstrom        a dino:Paleontologo ; rdfs:label "John Ostrom"@pt .
+dino:ErnstStromer      a dino:Paleontologo ; rdfs:label "Ernst Stromer"@pt .
+dino:DavidMartill      a dino:Paleontologo ; rdfs:label "David Martill"@pt .
+dino:ElmerRiggs        a dino:Paleontologo ; rdfs:label "Elmer Riggs"@pt .
+dino:JoseBonaparte     a dino:Paleontologo ; rdfs:label "Jose F. Bonaparte"@pt .
+dino:RodolfoCoria      a dino:Paleontologo ; rdfs:label "Rodolfo Coria"@pt .
+dino:MaxLanger         a dino:Paleontologo ; rdfs:label "Max Langer"@pt .
+dino:WalterGranger     a dino:Paleontologo ; rdfs:label "Walter Granger"@pt .
+dino:GeorgeBoulenger   a dino:Paleontologo ; rdfs:label "George A. Boulenger"@pt .
+dino:OsvaldoReig       a dino:Paleontologo ; rdfs:label "Osvaldo Reig"@pt .
+dino:EdwinColbert      a dino:Paleontologo ; rdfs:label "Edwin H. Colbert"@pt .
+
+# =====================================================================
+# INDIVIDUOS: especies de dinossauros
+# Medidas sao estimativas medias da literatura.
+# =====================================================================
+
+# --- Theropoda --------------------------------------------------------
+dino:Tyrannosaurus_rex a dino:Tyrannosauridae ;
+    rdfs:label "Tiranossauro"@pt ;
+    dino:nomeCientifico "Tyrannosaurus rex" ;
+    dino:comprimentoMetros 12.3 ; dino:massaToneladas 8.4 ;
+    dino:anoDescricao 1905 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HellCreek ;
+    dino:descritoPor dino:HenryOsborn ;
+    dino:predouSobre dino:Triceratops_horridus , dino:Edmontosaurus_annectens ,
+                     dino:Ankylosaurus_magniventris .
+
+dino:Velociraptor_mongoliensis a dino:Dromaeosauridae ;
+    rdfs:label "Velociraptor"@pt ;
+    dino:nomeCientifico "Velociraptor mongoliensis" ;
+    dino:comprimentoMetros 2.0 ; dino:massaToneladas 0.015 ;
+    dino:anoDescricao 1924 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Djadochta ;
+    dino:descritoPor dino:HenryOsborn ;
+    dino:predouSobre dino:Protoceratops_andrewsi .   # "Dinossauros Lutadores"
+
+dino:Deinonychus_antirrhopus a dino:Dromaeosauridae ;
+    rdfs:label "Deinonico"@pt ;
+    dino:nomeCientifico "Deinonychus antirrhopus" ;
+    dino:comprimentoMetros 3.4 ; dino:massaToneladas 0.07 ;
+    dino:anoDescricao 1969 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Cloverly ;
+    dino:descritoPor dino:JohnOstrom .
+
+dino:Spinosaurus_aegyptiacus a dino:Spinosauridae ;
+    rdfs:label "Espinossauro"@pt ;
+    dino:nomeCientifico "Spinosaurus aegyptiacus" ;
+    dino:comprimentoMetros 14.0 ; dino:massaToneladas 7.4 ;
+    dino:anoDescricao 1915 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Bahariya ;
+    dino:descritoPor dino:ErnstStromer .
+
+dino:Irritator_challengeri a dino:Spinosauridae ;
+    rdfs:label "Irritator"@pt ;
+    dino:nomeCientifico "Irritator challengeri" ;
+    dino:comprimentoMetros 6.5 ; dino:massaToneladas 1.0 ;
+    dino:anoDescricao 1996 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Romualdo ;
+    dino:descritoPor dino:DavidMartill .
+
+dino:Allosaurus_fragilis a dino:Allosauroidea ;
+    rdfs:label "Alossauro"@pt ;
+    dino:nomeCientifico "Allosaurus fragilis" ;
+    dino:comprimentoMetros 8.5 ; dino:massaToneladas 1.7 ;
+    dino:anoDescricao 1877 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:OthnielMarsh ;
+    dino:predouSobre dino:Stegosaurus_stenops .   # perfuracao por espinho caudal
+
+dino:Giganotosaurus_carolinii a dino:Allosauroidea ;
+    rdfs:label "Giganotossauro"@pt ;
+    dino:nomeCientifico "Giganotosaurus carolinii" ;
+    dino:comprimentoMetros 12.5 ; dino:massaToneladas 7.0 ;
+    dino:anoDescricao 1995 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Candeleros ;
+    dino:descritoPor dino:RodolfoCoria .
+
+# --- Saurischia basais (fora de Theropoda e Sauropodomorpha) ----------
+dino:Herrerasaurus_ischigualastensis a dino:Saurischia ;
+    rdfs:label "Herrerassauro"@pt ;
+    dino:nomeCientifico "Herrerasaurus ischigualastensis" ;
+    dino:comprimentoMetros 6.0 ; dino:massaToneladas 0.35 ;
+    dino:anoDescricao 1963 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:Ischigualasto ;
+    dino:descritoPor dino:OsvaldoReig .
+
+dino:Staurikosaurus_pricei a dino:Saurischia ;
+    rdfs:label "Estauricossauro"@pt ;
+    dino:nomeCientifico "Staurikosaurus pricei" ;
+    dino:comprimentoMetros 2.25 ; dino:massaToneladas 0.03 ;
+    dino:anoDescricao 1970 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:SantaMaria ;
+    dino:descritoPor dino:EdwinColbert .
+
+# --- Sauropodomorpha --------------------------------------------------
+dino:Saturnalia_tupiniquim a dino:Sauropodomorpha ;
+    rdfs:label "Saturnalia"@pt ;
+    dino:nomeCientifico "Saturnalia tupiniquim" ;
+    dino:comprimentoMetros 1.5 ; dino:massaToneladas 0.01 ;
+    dino:anoDescricao 1999 ; dino:dieta "onivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:SantaMaria ;
+    dino:descritoPor dino:MaxLanger .
+
+dino:Brachiosaurus_altithorax a dino:Sauropoda ;
+    rdfs:label "Braquiossauro"@pt ;
+    dino:nomeCientifico "Brachiosaurus altithorax" ;
+    dino:comprimentoMetros 22.0 ; dino:massaToneladas 35.0 ;
+    dino:anoDescricao 1903 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:ElmerRiggs .
+
+dino:Diplodocus_longus a dino:Sauropoda ;
+    rdfs:label "Diplodoco"@pt ;
+    dino:nomeCientifico "Diplodocus longus" ;
+    dino:comprimentoMetros 26.0 ; dino:massaToneladas 15.0 ;
+    dino:anoDescricao 1878 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Argentinosaurus_huinculensis a dino:Sauropoda ;
+    rdfs:label "Argentinossauro"@pt ;
+    dino:nomeCientifico "Argentinosaurus huinculensis" ;
+    dino:comprimentoMetros 35.0 ; dino:massaToneladas 70.0 ;
+    dino:anoDescricao 1993 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Huincul ;
+    dino:descritoPor dino:JoseBonaparte , dino:RodolfoCoria .
+
+# --- Ornithischia -----------------------------------------------------
+dino:Triceratops_horridus a dino:Ceratopsia ;
+    rdfs:label "Triceratopo"@pt ;
+    dino:nomeCientifico "Triceratops horridus" ;
+    dino:comprimentoMetros 9.0 ; dino:massaToneladas 9.0 ;
+    dino:anoDescricao 1889 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HellCreek ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Protoceratops_andrewsi a dino:Ceratopsia ;
+    rdfs:label "Protoceratopo"@pt ;
+    dino:nomeCientifico "Protoceratops andrewsi" ;
+    dino:comprimentoMetros 1.8 ; dino:massaToneladas 0.08 ;
+    dino:anoDescricao 1923 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Djadochta ;
+    dino:descritoPor dino:WalterGranger .
+
+dino:Stegosaurus_stenops a dino:Stegosauria ;
+    rdfs:label "Estegossauro"@pt ;
+    dino:nomeCientifico "Stegosaurus stenops" ;
+    dino:comprimentoMetros 9.0 ; dino:massaToneladas 5.0 ;
+    dino:anoDescricao 1887 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Ankylosaurus_magniventris a dino:Ankylosauria ;
+    rdfs:label "Anquilossauro"@pt ;
+    dino:nomeCientifico "Ankylosaurus magniventris" ;
+    dino:comprimentoMetros 7.0 ; dino:massaToneladas 6.0 ;
+    dino:anoDescricao 1908 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HellCreek ;
+    dino:descritoPor dino:BarnumBrown .
+
+dino:Edmontosaurus_annectens a dino:Ornithopoda ;
+    rdfs:label "Edmontossauro"@pt ;
+    dino:nomeCientifico "Edmontosaurus annectens" ;
+    dino:comprimentoMetros 12.0 ; dino:massaToneladas 6.0 ;
+    dino:anoDescricao 1892 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HellCreek ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Iguanodon_bernissartensis a dino:Ornithopoda ;
+    rdfs:label "Iguanodonte"@pt ;
+    dino:nomeCientifico "Iguanodon bernissartensis" ;
+    dino:comprimentoMetros 10.0 ; dino:massaToneladas 4.5 ;
+    dino:anoDescricao 1881 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:SainteBarbe ;
+    dino:descritoPor dino:GeorgeBoulenger .

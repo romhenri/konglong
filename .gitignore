@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+# workspace de estudo (/teach), fora da entrega
+MISSION.md
+NOTES.md
+RESOURCES.md
+lessons/
+reference/
+assets/
+learning-records/
