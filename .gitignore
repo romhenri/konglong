@@ -8,3 +8,6 @@ lessons/
 reference/
 assets/
 learning-records/
+
+# enunciado do projeto, fica so local
+*.pdf
