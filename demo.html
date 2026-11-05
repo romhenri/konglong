@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinossauros RDF/OWL · Demo SPARQL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F1;--surface:#FFFFFF;--surface2:#E8ECE7;--ink:#15201B;--muted:#56625B;--line:#D5DCD6;
+  --accent:#1F5E8C;--accent-ink:#FFFFFF;--accent-soft:#DCE8F1;--ok:#2B7546;--ok-soft:#DCEEE1;
+  --bad:#A33A2B;--bad-soft:#F6E0DC;--code:#0F1A15;--code-ink:#DCE6E0;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#2A3631;
+  --accent:#86B7DE;--accent-ink:#0E1412;--accent-soft:#1C2E3B;--ok:#72C48F;--ok-soft:#173022;
+  --bad:#EE8B7B;--bad-soft:#3A1F1A;--code:#0A0F0D;--code-ink:#D2DDD6;
+}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+code,textarea,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px max(16px,3vw);border-bottom:1px solid var(--line);background:var(--surface)}
+header h1{font-size:20px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.status{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px}
+button:hover{background:var(--surface2)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:not-allowed}
+main{display:grid;grid-template-columns:minmax(260px,330px) 1fr;gap:20px;padding:20px max(16px,3vw);align-items:start}
+@media (max-width:860px){main{grid-template-columns:1fr}}
+aside h2,section h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.presets{display:flex;flex-direction:column;gap:6px}
+.preset{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;text-align:left;padding:10px 12px;background:var(--surface)}
+.preset.active{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}
+.preset .n{font-weight:700;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--accent);grid-row:span 2}
+.preset .t{font-weight:600;font-size:14px}
+.preset .k{font-size:12px;color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px}
+.desc{margin:0 0 12px;color:var(--muted)}
+textarea{width:100%;min-height:260px;resize:vertical;background:var(--code);color:var(--code-ink);border:0;border-radius:10px;
+  padding:14px 16px;font-size:13.5px;line-height:1.55;tab-size:4}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.hint{color:var(--muted);font-size:13px}
+#saida{margin-top:16px}
+.res-head{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.res-head h3{margin:0;font-size:15px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;color:var(--muted);background:var(--surface2);font-weight:600}
+tr:last-child td{border-bottom:0}
+.bool{font-size:40px;font-weight:700;font-family:"JetBrains Mono",monospace}
+.bool.t{color:var(--ok)} .bool.f{color:var(--bad)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:700px){.grid2{grid-template-columns:1fr}}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:12px 14px;white-space:pre-wrap;font-family:"JetBrains Mono",monospace;font-size:13px}
+.delta{font-family:"JetBrains Mono",monospace;font-weight:600}
+.loader{padding:24px;color:var(--muted)}
+.fallback{margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Dinossauros em RDF/OWL · demo SPARQL</h1>
+    <p>Consultas SPARQL reais sobre <code>dinossauros.ttl</code>, executadas no navegador (Oxigraph).</p>
+  </div>
+  <div class="status">
+    <span id="st-base" class="chip">carregando base…</span>
+    <span id="st-triplas" class="chip">— triplas</span>
+    <button id="btn-reset" disabled title="Recarrega o .ttl original, desfazendo os updates">Restaurar base</button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <h2>Consultas prontas</h2>
+    <div id="presets" class="presets"></div>
+  </aside>
+
+  <section>
+    <h2 id="titulo">Editor</h2>
+    <div class="card">
+      <p id="descricao" class="desc">Escolha uma consulta pronta ou escreva a sua. Os prefixos <code>dino:</code>, <code>rdf:</code>, <code>rdfs:</code>, <code>owl:</code> e <code>xsd:</code> já estão declarados.</p>
+      <textarea id="editor" spellcheck="false" aria-label="Consulta SPARQL"></textarea>
+      <div class="bar">
+        <button id="btn-run" class="primary" disabled>Executar</button>
+        <span class="hint">Ctrl/⌘ + Enter</span>
+      </div>
+    </div>
+    <div id="saida"></div>
+  </section>
+</main>
+
+<script type="module">
+import init, * as ox from "https://cdn.jsdelivr.net/npm/oxigraph@0.5.10/web.js";
+
+const PREFIXOS = `PREFIX dino: <http://example.org/dino#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX xsd:  <http://www.w3.org/2001/XMLSchema#>
+`;
+const NS = {
+  "dino:": "http://example.org/dino#",
+  "rdf:": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+  "rdfs:": "http://www.w3.org/2000/01/rdf-schema#",
+  "owl:": "http://www.w3.org/2002/07/owl#",
+  "xsd:": "http://www.w3.org/2001/XMLSchema#",
+};
+
+// Consulta auxiliar usada para mostrar o "antes e depois" dos updates 2.9 e 2.10.
+const ESPINOSSAURIDEOS = `SELECT ?nome ?dieta ?formacao WHERE {
+    ?d a/rdfs:subClassOf* dino:Spinosauridae ;
+       dino:nomeCientifico ?nome ; dino:dieta ?dieta ;
+       dino:encontradoEm/rdfs:label ?formacao .
+}
+ORDER BY ?nome`;
+
+// Mesmas consultas da Parte 2 de consultas.py, com a mesma numeração.
+const CONSULTAS = [
+  {
+    n: "2.1", tipo: "SELECT · FILTER · ORDER BY", titulo: "Terópodes com mais de 8 m",
+    descricao: "Herança por subClassOf*: as espécies são tipadas no clado mais específico, e a consulta sobe até Theropoda.",
+    sparql: `SELECT ?nome ?clado ?comprimento ?massa WHERE {
+    ?d rdf:type ?c ;
+       dino:nomeCientifico ?nome ;
+       dino:comprimentoMetros ?comprimento ;
+       dino:massaToneladas ?massa .
+    ?c rdfs:subClassOf* dino:Theropoda ;
+       rdfs:label ?clado .
+    FILTER (?comprimento > 8)
+}
+ORDER BY DESC(?comprimento)`,
+  },
+  {
+    n: "2.2", tipo: "SELECT · COUNT/AVG/MAX", titulo: "Espécies e massa por período",
+    descricao: "As espécies apontam só para épocas; o período é alcançado pela transitividade de subperiodoDe.",
+    sparql: `SELECT ?periodo (COUNT(?d) AS ?especies) (ROUND(AVG(?m) * 10) / 10 AS ?massaMedia) (MAX(?m) AS ?massaMax)
+WHERE {
+    ?d dino:viveuEm/dino:subperiodoDe* ?p ;
+       dino:massaToneladas ?m .
+    ?p a dino:Periodo ;
+       rdfs:label ?periodo ;
+       dino:inicioMa ?inicio .
+}
+GROUP BY ?periodo ?inicio
+ORDER BY DESC(?inicio)`,
+  },
+  {
+    n: "2.3", tipo: "SELECT · subconsulta · GROUP_CONCAT", titulo: "Linhagem das espécies brasileiras",
+    descricao: "Todos os clados acima da classe direta, da raiz até a folha, para cada espécie encontrada no Brasil.",
+    sparql: `SELECT ?nome ?formacao (GROUP_CONCAT(?cladoNome; separator=" > ") AS ?linhagem)
+WHERE {
+    {
+        SELECT ?nome ?formacao ?cladoNome (COUNT(?sup) AS ?profundidade) WHERE {
+            ?d dino:encontradoEm ?f ;
+               dino:nomeCientifico ?nome ;
+               rdf:type/rdfs:subClassOf* ?clado .
+            ?f dino:localizadaEm dino:Brasil ;
+               rdfs:label ?formacao .
+            ?clado rdfs:label ?cladoNome ;
+                   rdfs:subClassOf* ?sup .
+            ?sup rdfs:subClassOf* dino:Dinossauro .
+        }
+        GROUP BY ?nome ?formacao ?cladoNome
+        ORDER BY ?nome ?profundidade
+    }
+}
+GROUP BY ?nome ?formacao
+ORDER BY ?nome`,
+  },
+  {
+    n: "2.4", tipo: "SELECT · UNION", titulo: "Cadeia alimentar documentada",
+    descricao: "Aceita o fato nas duas direções (predouSobre ou a inversa presaDe), porque não há raciocinador materializando owl:inverseOf.",
+    // Diferença em relação ao consultas.py: o Oxigraph perde precisão em contas
+    // encadeadas com xsd:decimal (a razão sai vazia ou 0), então a conta é feita
+    // em xsd:double e multiplicando antes de dividir. O resultado é o mesmo.
+    sparql: `SELECT ?predador ?presa (ROUND(xsd:double(?mp) * 100 / ?mq) / 100 AS ?razaoMassa) WHERE {
+    { ?a dino:predouSobre ?b } UNION { ?b dino:presaDe ?a }
+    ?a dino:nomeCientifico ?predador ; dino:massaToneladas ?mp .
+    ?b dino:nomeCientifico ?presa ; dino:massaToneladas ?mq .
+}
+ORDER BY ?predador ?presa`,
+  },
+  {
+    n: "2.5", tipo: "SELECT · GROUP BY · HAVING", titulo: "Paleontólogos mais produtivos",
+    descricao: "Quem descreveu mais de uma espécie, com o intervalo de anos das descrições.",
+    sparql: `SELECT ?paleontologo (COUNT(?d) AS ?especies) (MIN(?ano) AS ?primeira) (MAX(?ano) AS ?ultima)
+WHERE {
+    ?d dino:descritoPor ?p ; dino:anoDescricao ?ano .
+    ?p rdfs:label ?paleontologo .
+}
+GROUP BY ?paleontologo
+HAVING (COUNT(?d) > 1)
+ORDER BY DESC(?especies)`,
+  },
+  {
+    n: "2.6", tipo: "ASK", titulo: "T. rex e Stegosaurus coexistiram?",
+    descricao: "Esperado: false. Cretáceo vs Jurássico, cerca de 80 milhões de anos de distância.",
+    sparql: `ASK {
+    dino:Tyrannosaurus_rex   dino:viveuEm/dino:subperiodoDe* ?p .
+    dino:Stegosaurus_stenops dino:viveuEm/dino:subperiodoDe* ?p .
+    ?p a dino:Periodo .
+}`,
+  },
+  {
+    n: "2.7", tipo: "ASK", titulo: "Há dinossauro brasileiro do Triássico?",
+    descricao: "Esperado: true (Staurikosaurus e Saturnalia, Formação Santa Maria).",
+    sparql: `ASK {
+    ?d dino:encontradoEm/dino:localizadaEm dino:Brasil ;
+       dino:viveuEm/dino:subperiodoDe* dino:Triassico .
+}`,
+  },
+  {
+    n: "2.8", tipo: "CONSTRUCT", titulo: "Materializa viveuEm dos ornitísquios",
+    descricao: "Gera as triplas que a cadeia owl:propertyChainAxiom inferiria: época, período e era de cada espécie.",
+    sparql: `CONSTRUCT { ?d dino:viveuEm ?intervalo }
+WHERE {
+    ?d dino:viveuEm/dino:subperiodoDe* ?intervalo .
+    ?d a/rdfs:subClassOf* dino:Ornithischia .
+}`,
+  },
+  {
+    n: "2.9", tipo: "UPDATE · INSERT DATA", titulo: "Adiciona Oxalaia quilombensis",
+    descricao: "Registra o maior espinossaurídeo do Brasil (Kellner et al., 2011) e a Formação Alcântara (MA).",
+    verificar: ESPINOSSAURIDEOS,
+    sparql: `INSERT DATA {
+    dino:Alcantara a dino:FormacaoGeologica ;
+        rdfs:label "Formacao Alcantara"@pt ;
+        dino:localizadaEm dino:Brasil ;
+        dino:formacaoDatadaEm dino:CretaceoSuperior .
+    dino:AlexanderKellner a dino:Paleontologo ; rdfs:label "Alexander Kellner"@pt .
+    dino:Oxalaia_quilombensis a dino:Spinosauridae ;
+        rdfs:label "Oxalaia"@pt ;
+        dino:nomeCientifico "Oxalaia quilombensis" ;
+        dino:comprimentoMetros 12.0 ; dino:massaToneladas 5.0 ;
+        dino:anoDescricao 2011 ; dino:dieta "carnivoro" ;
+        dino:viveuEm dino:CretaceoSuperior ;
+        dino:encontradoEm dino:Alcantara ;
+        dino:descritoPor dino:AlexanderKellner .
+}`,
+  },
+  {
+    n: "2.10", tipo: "UPDATE · DELETE/INSERT", titulo: "Spinosauridae passam a piscívoros",
+    descricao: "Ibrahim et al. (2014, 2020). Troca a dieta de todo o clado; se o 2.9 já rodou, pega também o Oxalaia.",
+    verificar: ESPINOSSAURIDEOS,
+    sparql: `DELETE { ?d dino:dieta ?antiga }
+INSERT { ?d dino:dieta "piscivoro" }
+WHERE {
+    ?d a/rdfs:subClassOf* dino:Spinosauridae ;
+       dino:dieta ?antiga .
+}`,
+  },
+  {
+    n: "2.11", tipo: "UPDATE · DELETE DATA", titulo: "Remove T. rex → Ankylosaurus",
+    descricao: "Sem evidência fóssil direta (mordida ou conteúdo estomacal), a predação sai da base.",
+    verificar: `SELECT ?presa WHERE { dino:Tyrannosaurus_rex dino:predouSobre/dino:nomeCientifico ?presa }
+ORDER BY ?presa`,
+    sparql: `DELETE DATA {
+    dino:Tyrannosaurus_rex dino:predouSobre dino:Ankylosaurus_magniventris .
+}`,
+  },
+];
+
+const $ = (id) => document.getElementById(id);
+const editor = $("editor"), saida = $("saida");
+let store = null, ttlOriginal = null, atual = null;
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function curto(termo) {
+  if (!termo) return "—";
+  if (termo.termType === "Literal") return termo.value;
+  if (termo.termType === "BlankNode") return "_:" + termo.value;
+  for (const [p, ns] of Object.entries(NS)) if (termo.value.startsWith(ns)) return p + termo.value.slice(ns.length);
+  return "<" + termo.value + ">";
+}
+
+function ehUpdate(texto) {
+  const corpo = texto.replace(/#[^\n]*/g, "").replace(/^\s*(PREFIX|BASE)\b[^\n]*\n?/gim, "").trim();
+  return /^(INSERT|DELETE|LOAD|CLEAR|DROP|CREATE|ADD|MOVE|COPY|WITH)\b/i.test(corpo);
+}
+
+function tabela(linhas) {
+  if (!linhas.length) return `<p class="hint">(nenhum resultado)</p>`;
+  const cols = [...linhas[0].keys()];
+  const head = cols.map((c) => `<th>?${esc(c)}</th>`).join("");
+  const body = linhas.map((m) => "<tr>" + cols.map((c) => `<td>${esc(curto(m.get(c)))}</td>`).join("") + "</tr>").join("");
+  return `<div class="tbl"><table><tr>${head}</tr>${body}</table></div>`;
+}
+
+function renderizar(res) {
+  if (typeof res === "boolean") return `<div class="bool ${res ? "t" : "f"}">${res}</div>`;
+  if (res.length && res[0].subject) {
+    const body = res.map((q) => `<tr><td>${esc(curto(q.subject))}</td><td>${esc(curto(q.predicate))}</td><td>${esc(curto(q.object))}</td></tr>`).join("");
+    return `<div class="tbl"><table><tr><th>sujeito</th><th>predicado</th><th>objeto</th></tr>${body}</table></div>`;
+  }
+  return tabela(res);
+}
+
+function contar(res) {
+  if (typeof res === "boolean") return "ASK";
+  return `${res.length} ${res.length && res[0].subject ? "tripla(s) construída(s)" : "linha(s)"}`;
+}
+
+function atualizarContagem() { $("st-triplas").textContent = `${store.size} triplas`; }
+
+function executar() {
+  const texto = editor.value;
+  const t0 = performance.now();
+  try {
+    if (ehUpdate(texto)) {
+      const verificar = atual && atual.sparql === texto ? atual.verificar : null;
+      const antesRes = verificar ? store.query(PREFIXOS + verificar) : null;
+      const antes = store.size;
+      store.update(PREFIXOS + texto);
+      const ms = (performance.now() - t0).toFixed(1);
+      const delta = store.size - antes;
+      atualizarContagem();
+      let html = `<div class="res-head"><h3>Update executado</h3><span class="hint">${ms} ms</span></div>
+        <p>Triplas: ${antes} → ${store.size} <span class="delta">(${delta >= 0 ? "+" : ""}${delta})</span></p>`;
+      if (verificar) {
+        html += `<div class="grid2"><div><h3>Antes</h3>${tabela(antesRes)}</div><div><h3>Depois</h3>${tabela(store.query(PREFIXOS + verificar))}</div></div>`;
+      }
+      saida.innerHTML = html;
+    } else {
+      const res = store.query(PREFIXOS + texto);
+      const ms = (performance.now() - t0).toFixed(1);
+      saida.innerHTML = `<div class="res-head"><h3>Resultado · ${contar(res)}</h3><span class="hint">${ms} ms</span></div>${renderizar(res)}`;
+    }
+  } catch (e) {
+    saida.innerHTML = `<div class="err">${esc(e.message || e)}</div>`;
+  }
+}
+
+function selecionar(c, botao) {
+  atual = c;
+  editor.value = c.sparql;
+  $("titulo").textContent = `${c.n} · ${c.tipo}`;
+  $("descricao").textContent = `${c.titulo}. ${c.descricao}`;
+  document.querySelectorAll(".preset").forEach((b) => b.classList.toggle("active", b === botao));
+  executar();
+}
+
+function montarLista() {
+  const lista = $("presets");
+  for (const c of CONSULTAS) {
+    const b = document.createElement("button");
+    b.className = "preset";
+    b.innerHTML = `<span class="n">${c.n}</span><span class="t">${esc(c.titulo)}</span><span class="k">${esc(c.tipo)}</span>`;
+    b.disabled = true;
+    b.addEventListener("click", () => selecionar(c, b));
+    lista.appendChild(b);
+  }
+}
+
+function carregarBase(texto) {
+  store = new ox.Store();
+  store.load(texto, { format: "text/turtle", base_iri: "http://example.org/dino" });
+  ttlOriginal = texto;
+  $("st-base").textContent = "base carregada";
+  $("st-base").className = "chip ok";
+  atualizarContagem();
+  document.querySelectorAll("button").forEach((b) => (b.disabled = false));
+  saida.innerHTML = `<p class="hint">Clique numa consulta pronta para executá-la.</p>`;
+}
+
+function pedirArquivo(motivo) {
+  $("st-base").textContent = "base não carregada";
+  $("st-base").className = "chip bad";
+  saida.innerHTML = `<div class="card"><p>${esc(motivo)}</p>
+    <p class="hint">Rode <code>python3 -m http.server</code> na pasta do projeto e abra <code>http://localhost:8000/demo.html</code>, ou selecione o arquivo abaixo.</p>
+    <input class="fallback" type="file" accept=".ttl" id="arquivo"></div>`;
+  $("arquivo").addEventListener("change", async (ev) => {
+    const f = ev.target.files[0];
+    if (!f) return;
+    try { carregarBase(await f.text()); } catch (e) { saida.innerHTML = `<div class="err">${esc(e.message || e)}</div>`; }
+  });
+}
+
+montarLista();
+editor.value = `SELECT ?nome ?ano WHERE {\n    ?d dino:nomeCientifico ?nome ; dino:anoDescricao ?ano .\n}\nORDER BY ?ano`;
+editor.addEventListener("keydown", (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); executar(); } });
+$("btn-run").addEventListener("click", executar);
+$("btn-reset").addEventListener("click", () => { carregarBase(ttlOriginal); saida.innerHTML = `<p class="hint">Base restaurada a partir do .ttl original.</p>`; });
+
+saida.innerHTML = `<p class="loader">Carregando o motor SPARQL…</p>`;
+try {
+  await init();
+} catch (e) {
+  saida.innerHTML = `<div class="err">Não foi possível carregar o Oxigraph (precisa de internet): ${esc(e.message || e)}</div>`;
+  throw e;
+}
+try {
+  const r = await fetch("dinossauros.ttl");
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  carregarBase(await r.text());
+} catch (e) {
+  pedirArquivo("Não consegui ler dinossauros.ttl automaticamente (abrir o HTML direto do disco bloqueia essa leitura).");
+}
+</script>
+</body>
+</html>
