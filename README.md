@@ -1,10 +1,29 @@
 # Dinossauros e Clados: base de conhecimento RDF/OWL
 
-Mini-Projeto 3: base de conhecimento modelada com RDF, RDFS e OWL em Turtle (`dinossauros.ttl`) e consultada com rdflib e SPARQL (`consultas.py`).
+base de conhecimento modelada com RDF, RDFS e OWL em Turtle (`dinossauros.ttl`) e consultada com rdflib e SPARQL (`consultas.py`).
+
+**Sumário:** [Placar dos requisitos](#placar-dos-requisitos) · [Resumo da base](#resumo-da-base) · [Taxonomia](#taxonomia-hierarquia-de-classes) · [Propriedades](#propriedades) · [Construções OWL](#construções-owl-e-justificativa) · [Consultas](#consultas) · [O rdflib não raciocina](#o-rdflib-não-raciocina-como-as-consultas-compensam) · [Como executar](#como-executar)
+
+## Placar dos requisitos
+
+| Requisito do roteiro | Mínimo | Entregue | Onde comprovar |
+|---|---|---|---|
+| Hierarquia `rdfs:subClassOf` | 8 classes, 2 níveis abaixo da raiz | 23 classes; 3 níveis abaixo de Dinossauro (Saurischia › Theropoda › Tyrannosauridae) | `dinossauros.ttl` 24–93 · consulta 1.4 |
+| Propriedades com domain/range | 10 (5 de objeto + 5 de dados) | 10 de objeto + 7 de dados, todas com domain e range | `dinossauros.ttl` 152–258 |
+| Instâncias com valores plausíveis | 25 | 58 (19 espécies, 8 intervalos, formações, países, paleontólogos) | consulta `[0]` · [Fontes dos dados](#fontes-dos-dados) |
+| Triplas | 50 | 495 | consulta `[0]` |
+| Construções OWL justificadas | 5 | 8 tipos distintos | [Construções OWL](#construções-owl-e-justificativa) · consulta 1.6 |
+| Consultas `g.triples()` variando padrões | 5 | 7, cobrindo todas as combinações de fixo/`None` | [Parte 1](#parte-1-gtriples) |
+| SELECT com FILTER e com ORDER BY/agregação | 1 de cada | 5 SELECTs (2.1 FILTER + ORDER BY; 2.2 e 2.5 agregação) | 2.1–2.5 |
+| ASK | 1 | 2 (um `false`, um `true`) | 2.6, 2.7 |
+| CONSTRUCT | 1 | 1, gera 18 triplas inferidas | 2.8 |
+| Update: INSERT, DELETE, DELETE/INSERT | 1 de cada | 3, com antes/depois impresso | 2.9, 2.10, 2.11 |
+| App Python que carrega o `.ttl` e imprime cada consulta com número e propósito | sim | `Graph().parse(...)` e cabeçalho `[n] propósito` em cada consulta | `consultas.py` |
+| README com resumo, entidades, taxonomia e como executar | sim | este arquivo | [Como executar](#como-executar) |
 
 ## Resumo da base
 
-A base descreve **19 espécies de dinossauros** reais, classificadas por **clados** (Saurischia, Theropoda, Ceratopsia...), situadas na **escala de tempo geológico** (Era > Período > Época), ligadas às **formações geológicas** e aos **países** onde foram encontradas, e aos **paleontólogos** que as descreveram. Também registra relações de **predação** com evidência fóssil (ex.: os "Dinossauros Lutadores", Velociraptor x Protoceratops).
+A base descreve **19 espécies de dinossauros** reais, classificadas por **clados** (Saurischia, Theropoda, Ceratopsia...), situadas na **escala de tempo geológico** (Era > Período > Época), ligadas às **formações geológicas** e aos **países** onde foram encontradas, e aos **paleontólogos** que as descreveram. Também registra relações de **predação** com evidência fóssil (ex.: os "Dinossauros Lutadores", Velociraptor x Protoceratops). Inclui três espécies brasileiras: Irritator, Saturnalia e Staurikosaurus.
 
 | Item | Quantidade | Mínimo |
 |---|---|---|
@@ -15,7 +34,32 @@ A base descreve **19 espécies de dinossauros** reais, classificadas por **clado
 | Indivíduos | 58 | 25 |
 | Tipos de construção OWL | 8 | 5 |
 
-Esses números são recalculados e impressos pela própria aplicação (consulta `[0]`).
+Esses números são recalculados e impressos pela própria aplicação (consulta `[0]`). O `.ttl` é carregado com `Graph().parse(TTL, format="turtle")` na primeira linha do programa; se houvesse erro de sintaxe, nada mais rodaria.
+
+<details>
+<summary>Saída real da consulta [0]</summary>
+
+```
+[0] Estatisticas da base x minimos do roteiro
+------------------------------------------------------------------------
+  Triplas                     495  (minimo 50) OK
+  Classes                      23  (minimo 8) OK
+  Propriedades de objeto       10  (minimo 5) OK
+  Propriedades de dados         7  (minimo 5) OK
+  Individuos                   58  (minimo 25) OK
+  Tipos de construcao OWL       8  (minimo 5) OK
+  Construcoes OWL usadas:
+    - owl:TransitiveProperty: 1
+    - owl:FunctionalProperty: 5
+    - owl:AsymmetricProperty: 1
+    - owl:inverseOf: 3
+    - owl:propertyChainAxiom: 1
+    - owl:disjointWith: 1
+    - owl:AllDisjointClasses: 1
+    - owl:equivalentClass + owl:Restriction: 1
+```
+
+</details>
 
 ## Taxonomia (hierarquia de classes)
 
@@ -50,9 +94,20 @@ Pais                Brasil, Argentina, EUA, Mongolia, Egito, Belgica
 Paleontologo        Marsh, Osborn, Coria, Langer, ... (14)
 ```
 
-**Decisão de modelagem:** clados são **classes** e espécies são **indivíduos** do clado mais específico conhecido. Assim, `Tyrannosaurus_rex a Tyrannosauridae` basta; a pertinência a Theropoda, Saurischia e Dinossauro decorre de `rdfs:subClassOf` e é recuperada nas consultas com o caminho SPARQL `rdf:type/rdfs:subClassOf*`. Espécies basais (Herrerasaurus, Staurikosaurus, Saturnalia) ficam em clados mais altos, o que é fiel à incerteza filogenética real.
+**Decisão de modelagem: clado é classe, espécie é indivíduo do clado mais específico.** Assim, `Tyrannosaurus_rex a Tyrannosauridae` basta; a pertinência a Theropoda, Saurischia e Dinossauro decorre de `rdfs:subClassOf`, sem repetir tipos, e é recuperada nas consultas com o caminho SPARQL `rdf:type/rdfs:subClassOf*`. A espécie é indivíduo porque os fatos são dela (comprimento, massa, ano, autor) e ela recebe propriedades de dados diretamente. Espécies basais (Herrerasaurus, Staurikosaurus, Saturnalia) ficam em clados mais altos, o que é fiel à incerteza filogenética real.
 
-A escala de tempo usa **indivíduos** ligados por `subperiodoDe` (transitiva): `JurassicoSuperior subperiodoDe Jurassico subperiodoDe Mesozoico`. As espécies declaram só a época (`viveuEm JurassicoSuperior`); período e era são inferidos.
+A escala de tempo usa **indivíduos** ligados por `subperiodoDe` (transitiva): `JurassicoSuperior subperiodoDe Jurassico subperiodoDe Mesozoico`. As espécies declaram só a época (`viveuEm JurassicoSuperior`); período e era são inferidos. Datas em milhões de anos atrás (Ma), segundo a ICS 2023:
+
+| Intervalo | Nível | Início (Ma) | Fim (Ma) |
+|---|---|---|---|
+| Mesozoico | Era | 251,9 | 66,0 |
+| Triássico | Período | 251,9 | 201,4 |
+| Jurássico | Período | 201,4 | 143,1 |
+| Cretáceo | Período | 143,1 | 66,0 |
+| Triássico Superior | Época | 237,0 | 201,4 |
+| Jurássico Superior | Época | 161,5 | 143,1 |
+| Cretáceo Inferior | Época | 143,1 | 100,5 |
+| Cretáceo Superior | Época | 100,5 | 66,0 |
 
 ## Propriedades
 
@@ -66,6 +121,8 @@ A escala de tempo usa **indivíduos** ligados por `subperiodoDe` (transitiva): `
 | `descritoPor` / `descreveu` | Dinossauro ↔ Paleontologo | | `inicioMa` | Intervalo → xsd:decimal |
 | `predouSobre` / `presaDe` | Theropoda ↔ Dinossauro | | `fimMa` | Intervalo → xsd:decimal |
 
+Em RDFS, domain e range são **regras de inferência, não validação**: quem é sujeito de `viveuEm` passa a ser Dinossauro. Validar dados exigiria SHACL, fora do escopo do trabalho.
+
 ## Construções OWL e justificativa
 
 | Construção | Onde | Por quê (no domínio) |
@@ -77,41 +134,137 @@ A escala de tempo usa **indivíduos** ligados por `subperiodoDe` (transitiva): `
 | `owl:AsymmetricProperty` | `predouSobre` | Predação documentada é de mão única entre as espécies da base. |
 | `owl:disjointWith` | Saurischia x Ornithischia | As duas linhagens fundamentais de Dinosauria não se sobrepõem. |
 | `owl:AllDisjointClasses` | Era, Periodo, Epoca | Um intervalo ocupa um único nível da escala. |
-| `owl:equivalentClass` + `owl:Restriction` | `Predador ≡ ∃ predouSobre.Dinossauro` | Classe definida: um raciocinador classifica como Predador quem tem predação registrada. |
+| `owl:equivalentClass` + `owl:Restriction` | `Predador ≡ ∃ predouSobre.Dinossauro` | Classe definida: ninguém é declarado Predador; um raciocinador classifica como Predador quem tem predação registrada. |
 
-O rdflib não faz raciocínio OWL. Por isso as consultas aplicam a semântica explicitamente: `subClassOf*` para herança, `viveuEm/subperiodoDe*` para a transitividade e `UNION` com a propriedade inversa para predação. A consulta CONSTRUCT 2.8 materializa as triplas que a cadeia de propriedades inferiria.
+**Por que cadeia de propriedades e não `viveuEm` transitiva:** se `viveuEm` fosse transitiva, ela também valeria entre intervalos, e o domain Dinossauro faria um raciocinador concluir que o Jurássico é um dinossauro. A cadeia `viveuEm ∘ subperiodoDe → viveuEm` sempre começa num dinossauro, então só produz conclusões corretas.
 
 ## Consultas
 
-**Parte 1, `g.triples()`** (cada uma comentada no código com o que busca e o resultado esperado):
+### Parte 1, `g.triples()`
 
-| # | Padrão | Propósito |
+Cada consulta tem comentários `Busca:` e `Esperado:` no código (`consultas.py`, função `parte1`).
+
+| # | Padrão | Propósito | Resultado real |
+|---|---|---|---|
+| 1.1 | `(S, None, None)` | Ficha completa do T. rex | 13 fatos: Tyrannosauridae, 12,3 m, 8,4 t, 1905, carnívoro, Cretáceo Superior, Hell Creek, Osborn, 3 presas |
+| 1.2 | `(None, P, None)` | Espécie → formação onde foi encontrada | 19 pares, um por espécie |
+| 1.3 | `(None, None, O)` | Tudo que referencia o Cretáceo Superior | 9 espécies via `viveuEm` + 5 formações via `formacaoDatadaEm` |
+| 1.4 | `(S, P, None)` em laço | Linhagem de Tyrannosauridae até Dinossauro | Tyrannosauridae › Theropoda › Saurischia › Dinossauro |
+| 1.5 | `(None, P, O)` | Espécies descritas por Othniel Marsh | Allosaurus 1877, Diplodocus 1878, Stegosaurus 1887, Triceratops 1889, Edmontosaurus 1892 |
+| 1.6 | `(None, rdf:type, O)` | Propriedades transitivas e funcionais da ontologia | transitiva: `subperiodoDe`; funcionais: as 5 |
+| 1.7 | `(S, P, O) in g` | Verificação de fatos pontuais | Spinosaurus viveu no Cretáceo Superior: `True`; T. rex no Jurássico Superior: `False` |
+
+Exemplo de comentário e de laço (1.4), subindo a hierarquia sem SPARQL:
+
+```python
+# 1.4 Sujeito e predicado fixos (S, P, None).
+# Busca: a cadeia de superclasses de Tyrannosauridae, subindo um nivel
+# por vez com (classe, rdfs:subClassOf, None).
+# Esperado: Tyrannosauridae > Theropoda > Saurischia > Dinossauro.
+cadeia, atual = [DINO.Tyrannosauridae], DINO.Tyrannosauridae
+while True:
+    superclasses = [o for _, _, o in g.triples((atual, RDFS.subClassOf, None))]
+    if not superclasses:
+        break
+    atual = superclasses[0]
+    cadeia.append(atual)
+```
+
+### Parte 2, SPARQL
+
+| # | Tipo | Propósito | Resultado real |
+|---|---|---|---|
+| 2.1 | SELECT + FILTER + ORDER BY | Terópodes com mais de 8 m, do maior ao menor | Spinosaurus 14,0 · Giganotosaurus 12,5 · T. rex 12,3 · Allosaurus 8,5 |
+| 2.2 | SELECT + COUNT/AVG/MAX + GROUP BY | Espécies e massa por período (usa transitividade) | Triássico 3 · Jurássico 4 · Cretáceo 12 |
+| 2.3 | SELECT + subconsulta + GROUP_CONCAT | Linhagem completa das espécies brasileiras | Irritator: Dinossauro > Saurischia > Theropoda > Spinosauridae (e mais 2) |
+| 2.4 | SELECT + UNION | Cadeia alimentar considerando a propriedade inversa | 5 relações, com razão de massa |
+| 2.5 | SELECT + HAVING | Paleontólogos com mais de uma espécie descrita | Marsh 5 (1877–1892) · Osborn 2 · Coria 2 |
+| 2.6 | ASK | T. rex e Stegosaurus coexistiram? | `false` (Cretáceo vs Jurássico) |
+| 2.7 | ASK | Existe dinossauro brasileiro do Triássico? | `true` (Staurikosaurus e Saturnalia, Formação Santa Maria) |
+| 2.8 | CONSTRUCT | Materializa `viveuEm` para época, período e era | 18 triplas (6 ornitísquios × época, período, Mesozoico) |
+| 2.9 | INSERT DATA | Adiciona Oxalaia quilombensis (Brasil, 2011) | Spinosauridae: 2 → 3 espécies, +16 triplas |
+| 2.10 | DELETE/INSERT | Dieta dos Spinosauridae vira "piscivoro" (Ibrahim et al. 2014, 2020) | Irritator, Oxalaia, Spinosaurus: carnivoro → piscivoro |
+| 2.11 | DELETE DATA | Remove predação T. rex → Ankylosaurus, sem evidência fóssil | presas do T. rex: 3 → 2, −1 tripla |
+
+<details>
+<summary>2.2 completa: consulta e saída</summary>
+
+```sparql
+SELECT ?periodo (COUNT(?d) AS ?especies)
+       (ROUND(AVG(?m) * 10) / 10 AS ?massaMedia) (MAX(?m) AS ?massaMax)
+WHERE { ?d dino:viveuEm/dino:subperiodoDe* ?p ; dino:massaToneladas ?m .
+        ?p a dino:Periodo ; rdfs:label ?periodo ; dino:inicioMa ?inicio . }
+GROUP BY ?periodo ?inicio ORDER BY DESC(?inicio)
+```
+
+| Período | Espécies | Massa média (t) | Massa máx. (t) |
+|---|---|---|---|
+| Triássico | 3 | 0,1 | 0,35 |
+| Jurássico | 4 | 14,2 | 35,0 |
+| Cretáceo | 12 | 10 | 70,0 |
+
+Nenhuma espécie declara `viveuEm Cretaceo` diretamente; a contagem por período só funciona porque `subperiodoDe*` sobe da época ao período.
+
+</details>
+
+<details>
+<summary>2.4 completa: UNION para compensar a inversa</summary>
+
+```sparql
+SELECT ?predador ?presa (ROUND(?mp / ?mq * 100) / 100 AS ?razaoMassa) WHERE {
+    { ?a dino:predouSobre ?b } UNION { ?b dino:presaDe ?a }
+    ?a dino:nomeCientifico ?predador ; dino:massaToneladas ?mp .
+    ?b dino:nomeCientifico ?presa ; dino:massaToneladas ?mq .
+}
+ORDER BY ?predador ?presa
+```
+
+| Predador | Presa | Razão de massa |
 |---|---|---|
-| 1.1 | `(S, None, None)` | Ficha completa do T. rex |
-| 1.2 | `(None, P, None)` | Espécie → formação onde foi encontrada |
-| 1.3 | `(None, None, O)` | Tudo que referencia o Cretáceo Superior |
-| 1.4 | `(S, P, None)` em laço | Linhagem de Tyrannosauridae até Dinossauro |
-| 1.5 | `(None, P, O)` | Espécies descritas por Othniel Marsh |
-| 1.6 | `(None, rdf:type, O)` | Propriedades transitivas e funcionais da ontologia |
-| 1.7 | `(S, P, O) in g` | Verificação de fatos pontuais |
+| Allosaurus | Stegosaurus | 0,34 |
+| T. rex | Ankylosaurus | 1,4 |
+| T. rex | Edmontosaurus | 1,4 |
+| T. rex | Triceratops | 0,93 |
+| Velociraptor | Protoceratops | 0,19 |
 
-**Parte 2, SPARQL:**
+</details>
 
-| # | Tipo | Propósito |
-|---|---|---|
-| 2.1 | SELECT + FILTER + ORDER BY | Terópodes com mais de 8 m, do maior ao menor |
-| 2.2 | SELECT + COUNT/AVG/MAX + GROUP BY | Espécies e massa por período (usa transitividade) |
-| 2.3 | SELECT + subconsulta + GROUP_CONCAT | Linhagem completa das espécies brasileiras |
-| 2.4 | SELECT + UNION | Cadeia alimentar considerando a propriedade inversa |
-| 2.5 | SELECT + HAVING | Paleontólogos com mais de uma espécie descrita |
-| 2.6 | ASK | T. rex e Stegosaurus coexistiram? (`false`) |
-| 2.7 | ASK | Existe dinossauro brasileiro do Triássico? (`true`) |
-| 2.8 | CONSTRUCT | Materializa `viveuEm` para época, período e era |
-| 2.9 | INSERT DATA | Adiciona Oxalaia quilombensis (Brasil, 2011) |
-| 2.10 | DELETE/INSERT | Dieta dos Spinosauridae vira "piscivoro" (Ibrahim et al. 2014, 2020) |
-| 2.11 | DELETE DATA | Remove predação T. rex → Ankylosaurus, sem evidência fóssil |
+<details>
+<summary>2.8 CONSTRUCT e 2.10 DELETE/INSERT</summary>
 
-Cada update imprime o estado **antes e depois** e a variação no número de triplas. Os updates atuam só no grafo em memória; o `.ttl` não é alterado, então a execução é reproduzível.
+```sparql
+CONSTRUCT { ?d dino:viveuEm ?intervalo }
+WHERE { ?d dino:viveuEm/dino:subperiodoDe* ?intervalo .
+        ?d a/rdfs:subClassOf* dino:Ornithischia . }
+```
+
+```sparql
+DELETE { ?d dino:dieta ?antiga }
+INSERT { ?d dino:dieta "piscivoro" }
+WHERE {
+    ?d a/rdfs:subClassOf* dino:Spinosauridae ;
+       dino:dieta ?antiga .
+}
+```
+
+O 2.10 também altera o Oxalaia inserido no 2.9, porque o `WHERE` pega qualquer espécie do clado.
+
+</details>
+
+Cada update imprime o estado **antes e depois** e a variação no número de triplas. A última linha da saída resume: **495 triplas no início, 510 após os updates**. Os updates atuam só no grafo em memória; o `.ttl` não é alterado, então a execução é reproduzível.
+
+## O rdflib não raciocina: como as consultas compensam
+
+O rdflib guarda e consulta triplas, mas não aplica as regras de RDFS e OWL sozinho. Cada regra é reproduzida no padrão da consulta:
+
+| Regra da ontologia | O que um raciocinador faria | Como a consulta compensa | Usado em |
+|---|---|---|---|
+| `rdfs:subClassOf` | T. rex também é Theropoda e Dinossauro | `rdf:type/rdfs:subClassOf*` | 2.1, 2.3, 2.8, 2.10 |
+| `subperiodoDe` transitiva + cadeia em `viveuEm` | T. rex viveu no Cretáceo e no Mesozoico | `viveuEm/subperiodoDe*` | 2.2, 2.6, 2.7, 2.8 |
+| `owl:inverseOf` | `presaDe` gera o `predouSobre` correspondente | `UNION` com a propriedade inversa | 2.4 |
+| Inferências em geral | triplas novas no grafo | `CONSTRUCT` que materializa o resultado | 2.8 |
+
+Os axiomas OWL continuam úteis: documentam o significado e valem sem mudanças para qualquer raciocinador OWL.
 
 ## Como executar
 
@@ -128,12 +281,24 @@ python consultas.py
 
 A saída lista cada consulta com número e propósito, por exemplo `[2.6] ASK: T. rex e Stegosaurus coexistiram no mesmo periodo?`.
 
+### Demo interativa no navegador
+
+`demo.html` roda SPARQL de verdade sobre o `dinossauros.ttl` no navegador (motor [Oxigraph](https://github.com/oxigraph/oxigraph), carregado da internet). Tem um editor para consultas livres e as 11 consultas da Parte 2 em botões, com antes/depois nos updates e um botão para restaurar a base.
+
+```bash
+python3 -m http.server     # na pasta do projeto
+# abra http://localhost:8000/demo.html
+```
+
+Diferença em relação ao `consultas.py`: na 2.4, a razão de massa é calculada em `xsd:double`, porque o Oxigraph perde precisão nessa conta com `xsd:decimal`. Os resultados são os mesmos.
+
 ## Arquivos
 
 | Arquivo | Conteúdo |
 |---|---|
 | `dinossauros.ttl` | Ontologia (classes, propriedades, axiomas OWL) e indivíduos |
 | `consultas.py` | Carrega o `.ttl` e executa todas as consultas |
+| `demo.html` | Demo interativa: editor SPARQL e consultas prontas no navegador |
 | `requirements.txt` | Dependência (`rdflib`) |
 | `Mini_Projeto_03_-_Roteiro.pdf` | Enunciado do projeto |
 
