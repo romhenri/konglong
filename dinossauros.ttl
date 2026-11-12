@@ -14,8 +14,8 @@
 
 # =====================================================================
 # CLASSES: taxonomia de dinossauros (clados)
-# Raiz: Dinossauro. Profundidade maxima: 3 niveis abaixo da raiz
-# (Dinossauro > Saurischia > Theropoda > Tyrannosauridae).
+# Raiz: Dinossauro. Profundidade maxima: 4 niveis abaixo da raiz
+# (Dinossauro > Saurischia > Theropoda > Coelurosauria > Tyrannosauridae).
 # Especies sao modeladas como individuos da classe do clado mais
 # especifico conhecido; a pertinencia aos clados superiores e inferida
 # por rdfs:subClassOf.
@@ -36,12 +36,32 @@ dino:Theropoda a owl:Class ;
     rdfs:label "Theropoda"@pt ;
     rdfs:comment "Saurisquios bipedes, em sua maioria carnivoros; inclui as aves."@pt .
 
-dino:Tyrannosauridae a owl:Class ;
+dino:Ceratosauria a owl:Class ;
     rdfs:subClassOf dino:Theropoda ;
+    rdfs:label "Ceratosauria"@pt ;
+    rdfs:comment "Teropodes de linhagem antiga, muitos com chifres ou cristas no cranio."@pt .
+
+dino:Abelisauridae a owl:Class ;
+    rdfs:subClassOf dino:Ceratosauria ;
+    rdfs:label "Abelisauridae"@pt ;
+    rdfs:comment "Ceratossauros de cranio curto e bracos atrofiados, comuns no Gondwana."@pt .
+
+dino:Coelurosauria a owl:Class ;
+    rdfs:subClassOf dino:Theropoda ;
+    rdfs:label "Coelurosauria"@pt ;
+    rdfs:comment "Teropodes mais proximos das aves; muitos tinham penas."@pt .
+
+dino:Tyrannosauridae a owl:Class ;
+    rdfs:subClassOf dino:Coelurosauria ;
     rdfs:label "Tyrannosauridae"@pt .
 
+dino:Ornithomimosauria a owl:Class ;
+    rdfs:subClassOf dino:Coelurosauria ;
+    rdfs:label "Ornithomimosauria"@pt ;
+    rdfs:comment "Celurossauros corredores, de bico sem dentes, parecidos com avestruzes."@pt .
+
 dino:Dromaeosauridae a owl:Class ;
-    rdfs:subClassOf dino:Theropoda ;
+    rdfs:subClassOf dino:Coelurosauria ;
     rdfs:label "Dromaeosauridae"@pt ;
     rdfs:comment "Teropodes 'raptores', com garra em foice no segundo dedo do pe."@pt .
 
@@ -54,6 +74,11 @@ dino:Allosauroidea a owl:Class ;
     rdfs:subClassOf dino:Theropoda ;
     rdfs:label "Allosauroidea"@pt .
 
+dino:Carcharodontosauridae a owl:Class ;
+    rdfs:subClassOf dino:Allosauroidea ;
+    rdfs:label "Carcharodontosauridae"@pt ;
+    rdfs:comment "Alossauroides gigantes, com dentes laminados como os de tubarao."@pt .
+
 dino:Sauropodomorpha a owl:Class ;
     rdfs:subClassOf dino:Saurischia ;
     rdfs:label "Sauropodomorpha"@pt ;
@@ -63,6 +88,16 @@ dino:Sauropoda a owl:Class ;
     rdfs:subClassOf dino:Sauropodomorpha ;
     rdfs:label "Sauropoda"@pt ;
     rdfs:comment "Sauropodomorfos quadrupedes gigantes."@pt .
+
+dino:Diplodocidae a owl:Class ;
+    rdfs:subClassOf dino:Sauropoda ;
+    rdfs:label "Diplodocidae"@pt ;
+    rdfs:comment "Sauropodes longos e esguios, com cauda em chicote."@pt .
+
+dino:Titanosauria a owl:Class ;
+    rdfs:subClassOf dino:Sauropoda ;
+    rdfs:label "Titanosauria"@pt ;
+    rdfs:comment "Sauropodes do Cretaceo, incluindo os maiores animais terrestres conhecidos."@pt .
 
 # --- Ornithischia ("quadril de ave") ----------------------------------
 dino:Ornithischia a owl:Class ;
@@ -74,10 +109,25 @@ dino:Ornithopoda a owl:Class ;
     rdfs:subClassOf dino:Ornithischia ;
     rdfs:label "Ornithopoda"@pt .
 
+dino:Hadrosauridae a owl:Class ;
+    rdfs:subClassOf dino:Ornithopoda ;
+    rdfs:label "Hadrosauridae"@pt ;
+    rdfs:comment "Ornitopodes de bico de pato, com baterias de centenas de dentes."@pt .
+
 dino:Ceratopsia a owl:Class ;
     rdfs:subClassOf dino:Ornithischia ;
     rdfs:label "Ceratopsia"@pt ;
     rdfs:comment "Ornitisquios com bico rostral e, em geral, chifres e babados."@pt .
+
+dino:Ceratopsidae a owl:Class ;
+    rdfs:subClassOf dino:Ceratopsia ;
+    rdfs:label "Ceratopsidae"@pt ;
+    rdfs:comment "Ceratopsios grandes e quadrupedes, com chifres e babado osseo desenvolvidos."@pt .
+
+dino:Pachycephalosauria a owl:Class ;
+    rdfs:subClassOf dino:Ornithischia ;
+    rdfs:label "Pachycephalosauria"@pt ;
+    rdfs:comment "Ornitisquios bipedes com o teto do cranio espessado em domo."@pt .
 
 dino:Thyreophora a owl:Class ;
     rdfs:subClassOf dino:Ornithischia ;
@@ -276,9 +326,21 @@ dino:Cretaceo a dino:Periodo ;
     rdfs:label "Cretaceo"@pt ; dino:inicioMa 143.1 ; dino:fimMa 66.0 ;
     dino:subperiodoDe dino:Mesozoico .
 
+dino:TriassicoMedio a dino:Epoca ;
+    rdfs:label "Triassico Medio"@pt ; dino:inicioMa 247.2 ; dino:fimMa 237.0 ;
+    dino:subperiodoDe dino:Triassico .
+
 dino:TriassicoSuperior a dino:Epoca ;
     rdfs:label "Triassico Superior"@pt ; dino:inicioMa 237.0 ; dino:fimMa 201.4 ;
     dino:subperiodoDe dino:Triassico .
+
+dino:JurassicoInferior a dino:Epoca ;
+    rdfs:label "Jurassico Inferior"@pt ; dino:inicioMa 201.4 ; dino:fimMa 174.7 ;
+    dino:subperiodoDe dino:Jurassico .
+
+dino:JurassicoMedio a dino:Epoca ;
+    rdfs:label "Jurassico Medio"@pt ; dino:inicioMa 174.7 ; dino:fimMa 161.5 ;
+    dino:subperiodoDe dino:Jurassico .
 
 dino:JurassicoSuperior a dino:Epoca ;
     rdfs:label "Jurassico Superior"@pt ; dino:inicioMa 161.5 ; dino:fimMa 143.1 ;
@@ -403,7 +465,7 @@ dino:Allosaurus_fragilis a dino:Allosauroidea ;
     dino:descritoPor dino:OthnielMarsh ;
     dino:predouSobre dino:Stegosaurus_stenops .   # perfuracao por espinho caudal
 
-dino:Giganotosaurus_carolinii a dino:Allosauroidea ;
+dino:Giganotosaurus_carolinii a dino:Carcharodontosauridae ;
     rdfs:label "Giganotossauro"@pt ;
     dino:nomeCientifico "Giganotosaurus carolinii" ;
     dino:comprimentoMetros 12.5 ; dino:massaToneladas 7.0 ;
@@ -445,7 +507,7 @@ dino:Brachiosaurus_altithorax a dino:Sauropoda ;
     dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
     dino:descritoPor dino:ElmerRiggs .
 
-dino:Diplodocus_longus a dino:Sauropoda ;
+dino:Diplodocus_longus a dino:Diplodocidae ;
     rdfs:label "Diplodoco"@pt ;
     dino:nomeCientifico "Diplodocus longus" ;
     dino:comprimentoMetros 26.0 ; dino:massaToneladas 15.0 ;
@@ -453,7 +515,7 @@ dino:Diplodocus_longus a dino:Sauropoda ;
     dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
     dino:descritoPor dino:OthnielMarsh .
 
-dino:Argentinosaurus_huinculensis a dino:Sauropoda ;
+dino:Argentinosaurus_huinculensis a dino:Titanosauria ;
     rdfs:label "Argentinossauro"@pt ;
     dino:nomeCientifico "Argentinosaurus huinculensis" ;
     dino:comprimentoMetros 35.0 ; dino:massaToneladas 70.0 ;
@@ -462,7 +524,7 @@ dino:Argentinosaurus_huinculensis a dino:Sauropoda ;
     dino:descritoPor dino:JoseBonaparte , dino:RodolfoCoria .
 
 # --- Ornithischia -----------------------------------------------------
-dino:Triceratops_horridus a dino:Ceratopsia ;
+dino:Triceratops_horridus a dino:Ceratopsidae ;
     rdfs:label "Triceratopo"@pt ;
     dino:nomeCientifico "Triceratops horridus" ;
     dino:comprimentoMetros 9.0 ; dino:massaToneladas 9.0 ;
@@ -494,7 +556,7 @@ dino:Ankylosaurus_magniventris a dino:Ankylosauria ;
     dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HellCreek ;
     dino:descritoPor dino:BarnumBrown .
 
-dino:Edmontosaurus_annectens a dino:Ornithopoda ;
+dino:Edmontosaurus_annectens a dino:Hadrosauridae ;
     rdfs:label "Edmontossauro"@pt ;
     dino:nomeCientifico "Edmontosaurus annectens" ;
     dino:comprimentoMetros 12.0 ; dino:massaToneladas 6.0 ;
