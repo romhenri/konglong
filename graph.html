@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dinossauros RDF/OWL · Grafo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F1;--surface:#FFFFFF;--surface2:#E8ECE7;--ink:#15201B;--muted:#56625B;--line:#D5DCD6;
+  --accent:#1F5E8C;--accent-soft:#DCE8F1;--ok:#2B7546;--ok-soft:#DCEEE1;--bad:#A33A2B;--bad-soft:#F6E0DC;
+  --edge:#AEB8B1;--edge-type:#C8D0CA;--edge-sub:#1F5E8C;
+  --c-especie:#2B7546;--c-clado:#1F5E8C;--c-intervalo:#B5651D;--c-formacao:#7A5236;--c-pais:#6B4FA0;
+  --c-paleontologo:#A33A2B;--c-propriedade:#2F7F7F;--c-axioma:#7A7F7C;--c-vocabulario:#A4ACA6;--c-literal:#B8921A;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#2A3631;
+  --accent:#86B7DE;--accent-soft:#1C2E3B;--ok:#72C48F;--ok-soft:#173022;--bad:#EE8B7B;--bad-soft:#3A1F1A;
+  --edge:#4A5751;--edge-type:#36423D;--edge-sub:#86B7DE;
+  --c-especie:#72C48F;--c-clado:#86B7DE;--c-intervalo:#E8A26A;--c-formacao:#C99B78;--c-pais:#B7A2E6;
+  --c-paleontologo:#EE8B7B;--c-propriedade:#6CC4C4;--c-axioma:#9AA8A0;--c-vocabulario:#6B7872;--c-literal:#E3C25A;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#2A3631;
+  --accent:#86B7DE;--accent-soft:#1C2E3B;--ok:#72C48F;--ok-soft:#173022;--bad:#EE8B7B;--bad-soft:#3A1F1A;
+  --edge:#4A5751;--edge-type:#36423D;--edge-sub:#86B7DE;
+  --c-especie:#72C48F;--c-clado:#86B7DE;--c-intervalo:#E8A26A;--c-formacao:#C99B78;--c-pais:#B7A2E6;
+  --c-paleontologo:#EE8B7B;--c-propriedade:#6CC4C4;--c-axioma:#9AA8A0;--c-vocabulario:#6B7872;--c-literal:#E3C25A;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;display:flex;flex-direction:column}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px max(16px,3vw);border-bottom:1px solid var(--line);background:var(--surface)}
+header h1{font-size:20px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.status{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surface2);color:var(--muted)}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+button,input[type=search]{font:inherit;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px}
+button{cursor:pointer}
+button:hover{background:var(--surface2)}
+main{flex:1;min-height:0;display:grid;grid-template-columns:300px 1fr;gap:16px;padding:16px max(16px,3vw)}
+@media (max-width:860px){main{grid-template-columns:1fr}#cy{height:70vh}}
+aside{display:flex;flex-direction:column;gap:14px;min-height:0;overflow:auto}
+aside h2{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.toggles label{display:flex;gap:8px;align-items:center;font-size:14px;padding:3px 0;cursor:pointer}
+.legend{display:grid;grid-template-columns:auto 1fr auto;gap:4px 8px;align-items:center;font-size:13.5px}
+.dot{width:12px;height:12px;border-radius:50%}
+.legend .n{color:var(--muted);font-family:"JetBrains Mono",monospace;font-size:12px}
+.legend .off{opacity:.4}
+#busca{width:100%}
+#cy{background:var(--surface);border:1px solid var(--line);border-radius:12px;min-height:420px;position:relative}
+.hint{color:var(--muted);font-size:13px;margin:0}
+#painel h3{margin:0 0 2px;font-size:16px;overflow-wrap:anywhere}
+#painel .uri{font-size:12px;color:var(--muted);overflow-wrap:anywhere;margin-bottom:10px}
+#painel table{border-collapse:collapse;width:100%;font-size:13px}
+#painel td{padding:4px 0;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+#painel td.p{color:var(--muted);padding-right:8px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px}
+#painel h4{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px}
+.link{border:0;background:none;padding:0;color:var(--accent);text-align:left;font:inherit;cursor:pointer}
+.link:hover{text-decoration:underline;background:none}
+.lit{font-family:"JetBrains Mono",monospace;font-size:12px}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:12px 14px;font-size:13px}
+.fallback{margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Dinossauros em RDF/OWL · grafo</h1>
+    <p>Todas as triplas de <code>dinossauros.ttl</code> como nós e arestas. Clique num nó para ver os fatos dele.</p>
+  </div>
+  <div class="status">
+    <span id="st-triplas" class="chip">carregando…</span>
+    <span id="st-visiveis" class="chip">—</span>
+    <button id="btn-layout" disabled>Reorganizar</button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <div class="card">
+      <h2>Buscar</h2>
+      <input id="busca" type="search" list="nomes" placeholder="ex.: Tyrannosaurus, Brasil, Marsh" disabled>
+      <datalist id="nomes"></datalist>
+    </div>
+    <div class="card toggles">
+      <h2>Mostrar</h2>
+      <label><input type="checkbox" id="f-type" checked> arestas <code>rdf:type</code></label>
+      <label><input type="checkbox" id="f-esquema"> esquema OWL (propriedades, axiomas)</label>
+      <label><input type="checkbox" id="f-literal"> literais (nomes, medidas, datas)</label>
+    </div>
+    <div class="card">
+      <h2>Legenda</h2>
+      <div id="legenda" class="legend"></div>
+    </div>
+    <div class="card" id="painel">
+      <p class="hint">Nenhum nó selecionado.</p>
+    </div>
+  </aside>
+  <div id="cy"></div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+<script type="module">
+import init, * as ox from "https://cdn.jsdelivr.net/npm/oxigraph@0.5.10/web.js";
+
+const RDF = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+const RDFS = "http://www.w3.org/2000/01/rdf-schema#";
+const OWL = "http://www.w3.org/2002/07/owl#";
+const XSD = "http://www.w3.org/2001/XMLSchema#";
+const DINO = "http://example.org/dino#";
+const PREFIXOS = [[RDF, "rdf:"], [RDFS, "rdfs:"], [OWL, "owl:"], [XSD, "xsd:"], [DINO, "dino:"]];
+
+// categorias na ordem da legenda; "esquema" marca o que o filtro de esquema esconde
+const CATEGORIAS = [
+  { id: "especie", nome: "espécie" },
+  { id: "clado", nome: "clado (classe)" },
+  { id: "intervalo", nome: "intervalo geológico" },
+  { id: "formacao", nome: "formação" },
+  { id: "pais", nome: "país" },
+  { id: "paleontologo", nome: "paleontólogo" },
+  { id: "propriedade", nome: "propriedade", esquema: true },
+  { id: "axioma", nome: "axioma / nó anônimo", esquema: true },
+  { id: "vocabulario", nome: "vocabulário rdf/owl", esquema: true },
+  { id: "literal", nome: "literal" },
+];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const curta = (uri) => { for (const [ns, p] of PREFIXOS) if (uri.startsWith(ns)) return p + uri.slice(ns.length); return uri; };
+const cor = (nome) => getComputedStyle(document.documentElement).getPropertyValue(nome).trim();
+
+let cy = null;
+let triplas = [];        // { s, p, o, oLit } com ids dos nós
+const info = new Map();  // id do nó -> { rotulo, categoria, uri, literal }
+
+function idDe(termo, i) {
+  if (termo.termType === "BlankNode") return "_:" + termo.value;
+  if (termo.termType === "Literal") return "lit:" + i; // um nó por literal, para nao criar hubs falsos
+  return termo.value;
+}
+
+function classificar(quads) {
+  const tipos = new Map(), superclasses = new Map(), rotulos = new Map();
+  for (const q of quads) {
+    const s = q.subject.value, p = q.predicate.value, o = q.object.value;
+    if (p === RDF + "type") (tipos.get(s) ?? tipos.set(s, new Set()).get(s)).add(o);
+    if (p === RDFS + "subClassOf") (superclasses.get(s) ?? superclasses.set(s, new Set()).get(s)).add(o);
+    if (p === RDFS + "label") rotulos.set(s, o);
+  }
+  const descendeDe = (c, alvo, vistos = new Set()) => {
+    if (c === alvo) return true;
+    if (vistos.has(c)) return false;
+    vistos.add(c);
+    return [...(superclasses.get(c) ?? [])].some((sc) => descendeDe(sc, alvo, vistos));
+  };
+  const categoria = (termo) => {
+    if (termo.termType === "Literal") return "literal";
+    if (termo.termType === "BlankNode") return "axioma";
+    const t = tipos.get(termo.value) ?? new Set();
+    if (t.has(OWL + "Ontology")) return "axioma";
+    if (t.has(OWL + "ObjectProperty") || t.has(OWL + "DatatypeProperty")) return "propriedade";
+    if (t.has(OWL + "Class")) return descendeDe(termo.value, DINO + "IntervaloGeologico") ? "intervalo" : "clado";
+    for (const c of t) {
+      if (descendeDe(c, DINO + "Dinossauro")) return "especie";
+      if (descendeDe(c, DINO + "IntervaloGeologico")) return "intervalo";
+      if (c === DINO + "FormacaoGeologica") return "formacao";
+      if (c === DINO + "Pais") return "pais";
+      if (c === DINO + "Paleontologo") return "paleontologo";
+    }
+    return termo.value.startsWith(DINO) ? "clado" : "vocabulario";
+  };
+  const rotulo = (termo) => {
+    if (termo.termType === "Literal") return termo.value.length > 32 ? termo.value.slice(0, 30) + "…" : termo.value;
+    if (termo.termType === "BlankNode") return "∅";
+    return rotulos.get(termo.value) ?? curta(termo.value);
+  };
+  return { categoria, rotulo };
+}
+
+function montar(texto) {
+  const store = new ox.Store();
+  store.load(texto, { format: "text/turtle", base_iri: "http://example.org/dino" });
+  const quads = Array.from(store.match(null, null, null, null));
+  const { categoria, rotulo } = classificar(quads);
+  info.clear();
+  triplas = [];
+
+  const registrar = (termo, id) => {
+    if (info.has(id)) return;
+    const lit = termo.termType === "Literal";
+    info.set(id, {
+      rotulo: rotulo(termo),
+      categoria: categoria(termo),
+      uri: termo.termType === "NamedNode" ? termo.value : null,
+      literal: lit ? { valor: termo.value, tipo: termo.language ? "@" + termo.language : curta(termo.datatype.value) } : null,
+    });
+  };
+  quads.forEach((q, i) => {
+    const s = idDe(q.subject, i), o = idDe(q.object, i);
+    registrar(q.subject, s);
+    registrar(q.object, o);
+    triplas.push({ s, p: q.predicate.value, o });
+  });
+
+  const elementos = [];
+  for (const [id, n] of info) elementos.push({ group: "nodes", data: { id, rotulo: n.rotulo }, classes: n.categoria });
+  triplas.forEach((t, i) => {
+    const p = t.p === RDF + "type" ? "tipo" : t.p === RDFS + "subClassOf" ? "sub" : "rel";
+    elementos.push({ group: "edges", data: { id: "e" + i, source: t.s, target: t.o, rotulo: curta(t.p) }, classes: p });
+  });
+
+  if (cy) cy.destroy();
+  cy = cytoscape({ container: $("cy"), elements: elementos, style: estilo(), wheelSensitivity: 0.25, minZoom: 0.1, maxZoom: 3 });
+  cy.on("tap", "node", (ev) => selecionar(ev.target.id()));
+  cy.on("tap", (ev) => { if (ev.target === cy) limparSelecao(); });
+
+  $("st-triplas").textContent = `${quads.length} triplas · ${info.size} nós`;
+  $("st-triplas").className = "chip ok";
+  $("nomes").innerHTML = [...info.values()].filter((n) => n.uri).map((n) => `<option value="${esc(n.rotulo)}">`).join("");
+  ["btn-layout", "busca"].forEach((id) => ($(id).disabled = false));
+  montarLegenda();
+  aplicarFiltros();
+}
+
+function estilo() {
+  const s = [
+    { selector: "node", style: {
+      label: "data(rotulo)", "font-size": 10, color: cor("--ink"), "text-valign": "bottom", "text-margin-y": 3,
+      "text-outline-color": cor("--surface"), "text-outline-width": 2, width: 14, height: 14,
+      "min-zoomed-font-size": 7, "border-width": 0 } },
+    { selector: "node.especie", style: { width: 20, height: 20, "font-weight": 600 } },
+    { selector: "node.literal", style: { shape: "round-rectangle", width: 8, height: 8, "font-size": 8, "font-family": "JetBrains Mono, monospace" } },
+    { selector: "node.axioma, node.vocabulario", style: { shape: "diamond", width: 10, height: 10 } },
+    { selector: "edge", style: {
+      width: 1, "line-color": cor("--edge"), "target-arrow-color": cor("--edge"), "target-arrow-shape": "triangle",
+      "arrow-scale": 0.6, "curve-style": "bezier", label: "data(rotulo)", "font-size": 7, color: cor("--muted"),
+      "text-rotation": "autorotate", "text-outline-color": cor("--surface"), "text-outline-width": 2, "min-zoomed-font-size": 9 } },
+    { selector: "edge.tipo", style: { "line-style": "dashed", "line-color": cor("--edge-type"), "target-arrow-color": cor("--edge-type") } },
+    { selector: "edge.sub", style: { width: 2, "line-color": cor("--edge-sub"), "target-arrow-color": cor("--edge-sub") } },
+    { selector: ".oculto", style: { display: "none" } },
+    { selector: ".apagado", style: { opacity: 0.12 } },
+    { selector: "node:selected", style: { "border-width": 3, "border-color": cor("--ink") } },
+  ];
+  for (const c of CATEGORIAS) s.splice(3, 0, { selector: `node.${c.id}`, style: { "background-color": cor(`--c-${c.id}`) } });
+  return s;
+}
+
+function montarLegenda() {
+  const conta = {};
+  for (const n of info.values()) conta[n.categoria] = (conta[n.categoria] ?? 0) + 1;
+  $("legenda").innerHTML = CATEGORIAS.filter((c) => conta[c.id]).map((c) =>
+    `<span class="dot" data-cat="${c.id}" style="background:var(--c-${c.id})"></span><span data-cat="${c.id}">${c.nome}</span><span class="n" data-cat="${c.id}">${conta[c.id]}</span>`
+  ).join("");
+}
+
+function aplicarFiltros() {
+  const verLit = $("f-literal").checked, verEsq = $("f-esquema").checked, verTipo = $("f-type").checked;
+  const escondida = new Set(CATEGORIAS.filter((c) => (c.esquema && !verEsq) || (c.id === "literal" && !verLit)).map((c) => c.id));
+  cy.batch(() => {
+    cy.nodes().forEach((n) => n.toggleClass("oculto", escondida.has(info.get(n.id()).categoria)));
+    cy.edges().forEach((e) => e.toggleClass("oculto", e.hasClass("tipo") && !verTipo));
+  });
+  document.querySelectorAll("#legenda [data-cat]").forEach((el) => el.classList.toggle("off", escondida.has(el.dataset.cat)));
+  const visiveis = cy.edges().filter((e) => !e.hasClass("oculto") && !e.source().hasClass("oculto") && !e.target().hasClass("oculto")).length;
+  $("st-visiveis").textContent = `mostrando ${visiveis} arestas`;
+  // nós sem nenhuma aresta visível (ex.: rótulos já viram texto do nó) também somem
+  cy.nodes().filter((n) => !n.hasClass("oculto") && n.connectedEdges().filter((e) => !e.hasClass("oculto") && !e.connectedNodes().hasClass("oculto")).length === 0)
+    .addClass("oculto");
+  organizar();
+}
+
+function organizar() {
+  cy.elements().not(".oculto").layout({
+    name: "cose", animate: false, randomize: true, nodeRepulsion: () => 9000, idealEdgeLength: () => 70,
+    edgeElasticity: () => 80, gravity: 0.6, numIter: 1500, padding: 30,
+  }).run();
+}
+
+function selecionar(id) {
+  const no = cy.getElementById(id);
+  if (no.empty()) return;
+  if (no.hasClass("oculto")) { no.removeClass("oculto"); }
+  cy.elements().unselect();
+  no.select();
+  const vizinhos = no.closedNeighborhood();
+  cy.batch(() => { cy.elements().addClass("apagado"); vizinhos.removeClass("apagado"); });
+  cy.animate({ center: { eles: no }, zoom: Math.max(cy.zoom(), 1.1) }, { duration: 300 });
+  mostrarPainel(id);
+}
+
+function limparSelecao() {
+  cy.elements().removeClass("apagado").unselect();
+  $("painel").innerHTML = `<p class="hint">Nenhum nó selecionado.</p>`;
+}
+
+function refHtml(id) {
+  const n = info.get(id);
+  if (n.literal) return `<span class="lit">"${esc(n.literal.valor)}"<span class="hint"> ${esc(n.literal.tipo)}</span></span>`;
+  return `<button class="link" data-ir="${esc(id)}">${esc(n.rotulo)}</button>`;
+}
+
+function mostrarPainel(id) {
+  const n = info.get(id);
+  const saem = triplas.filter((t) => t.s === id), entram = triplas.filter((t) => t.o === id);
+  const linhas = (lista, lado) => lista.map((t) => `<tr><td class="p">${esc(curta(t.p))}</td><td>${refHtml(lado === "saem" ? t.o : t.s)}</td></tr>`).join("");
+  const cat = CATEGORIAS.find((c) => c.id === n.categoria)?.nome ?? n.categoria;
+  $("painel").innerHTML = `
+    <h3>${esc(n.literal ? '"' + n.literal.valor + '"' : n.rotulo)}</h3>
+    <div class="uri mono">${esc(n.uri ? curta(n.uri) : n.literal ? n.literal.tipo : "nó anônimo")} · ${esc(cat)}</div>
+    ${saem.length ? `<h4>sai (${saem.length})</h4><table>${linhas(saem, "saem")}</table>` : ""}
+    ${entram.length ? `<h4>chega (${entram.length})</h4><table>${linhas(entram, "entram")}</table>` : ""}`;
+}
+
+$("painel").addEventListener("click", (ev) => {
+  const alvo = ev.target.closest("[data-ir]");
+  if (alvo) selecionar(alvo.dataset.ir);
+});
+["f-literal", "f-esquema", "f-type"].forEach((id) => $(id).addEventListener("change", () => { limparSelecao(); aplicarFiltros(); }));
+$("btn-layout").addEventListener("click", organizar);
+$("busca").addEventListener("change", (ev) => {
+  const termo = ev.target.value.trim().toLowerCase();
+  if (!termo) return;
+  const achado = [...info].find(([, n]) => n.uri && n.rotulo.toLowerCase() === termo)
+    ?? [...info].find(([, n]) => n.uri && n.rotulo.toLowerCase().includes(termo));
+  if (achado) selecionar(achado[0]);
+});
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => cy && cy.style(estilo()));
+
+function pedirArquivo(msg) {
+  $("st-triplas").textContent = "base não carregada";
+  $("st-triplas").className = "chip bad";
+  $("painel").innerHTML = `<div class="err">${esc(msg)}</div>
+    <p class="hint" style="margin-top:8px">Rode <code>python3 -m http.server</code> na pasta do projeto e abra <code>http://localhost:8000/graph.html</code>, ou selecione o arquivo abaixo.</p>
+    <input class="fallback" type="file" accept=".ttl" id="arquivo">`;
+  $("arquivo").addEventListener("change", async (ev) => {
+    const f = ev.target.files[0];
+    if (f) montar(await f.text());
+  });
+}
+
+try {
+  if (!window.cytoscape) throw new Error("cytoscape não carregou");
+  await init();
+} catch (e) {
+  pedirArquivo(`Não foi possível carregar as bibliotecas (precisa de internet): ${e.message || e}`);
+  throw e;
+}
+try {
+  const r = await fetch("dinossauros.ttl");
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  montar(await r.text());
+} catch (e) {
+  pedirArquivo("Não consegui ler dinossauros.ttl automaticamente (abrir o HTML direto do disco bloqueia essa leitura).");
+}
+</script>
+</body>
+</html>
