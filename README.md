@@ -312,6 +312,10 @@ Diferença em relação ao `consultas.py`: na 2.4, a razão de massa é calculad
 
 Sirva a pasta do mesmo jeito e abra `http://localhost:8000/guide.html`.
 
+### Árvore dos clados
+
+`tree.html` desenha só a hierarquia taxonômica, como um cladograma: os clados ligados por `rdfs:subClassOf` a partir de `dino:Dinossauro`, e cada espécie como folha do seu clado mais específico. É uma árvore estrita, sem as arestas de predação, época ou formação do `graph.html`. Cada nó aparece uma única vez, e classes definidas por axioma, como `Predador`, ficam de fora porque não são clados. Clicar num clado recolhe ou expande o ramo e mostra a descrição; clicar numa espécie leva à ficha no `guide.html`. A busca destaca os resultados e abre o caminho até eles.
+
 ## Arquivos
 
 | Arquivo | Conteúdo |
@@ -320,6 +324,7 @@ Sirva a pasta do mesmo jeito e abra `http://localhost:8000/guide.html`.
 | `consultas.py` | Carrega o `.ttl` e executa todas as consultas |
 | `demo.html` | Demo interativa: editor SPARQL e consultas prontas no navegador |
 | `guide.html` | Guia de campo: uma ficha por espécie, com busca e filtros |
+| `tree.html` | Cladograma: árvore de clados com as espécies nas folhas |
 | `requirements.txt` | Dependência (`rdflib`) |
 | `Mini_Projeto_03_-_Roteiro.pdf` | Enunciado do projeto |
 

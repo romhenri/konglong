@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Árvore dos Clados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F1;--surface:#FFFFFF;--surface2:#E8ECE7;--ink:#15201B;--muted:#56625B;--line:#C9D1CB;
+  --accent:#1F5E8C;--accent-soft:#DCE8F1;--bad:#A33A2B;--bad-soft:#F6E0DC;--mark:#F3D36B;
+  --g-theropoda:#B5452F;--g-sauropodomorpha:#2B7546;--g-ornithischia:#1F5E8C;--g-basal:#7A6A4F;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#34423C;
+  --accent:#86B7DE;--accent-soft:#1C2E3B;--bad:#EE8B7B;--bad-soft:#3A1F1A;--mark:#6B5A1E;
+  --g-theropoda:#EE8B7B;--g-sauropodomorpha:#72C48F;--g-ornithischia:#86B7DE;--g-basal:#CDB894;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#34423C;
+  --accent:#86B7DE;--accent-soft:#1C2E3B;--bad:#EE8B7B;--bad-soft:#3A1F1A;--mark:#6B5A1E;
+  --g-theropoda:#EE8B7B;--g-sauropodomorpha:#72C48F;--g-ornithischia:#86B7DE;--g-basal:#CDB894;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;display:flex;flex-direction:column}
+code{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px max(16px,3vw);border-bottom:1px solid var(--line);background:var(--surface)}
+header h1{font-size:20px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:14px}
+header nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+header nav a{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none;padding:4px 8px;border-radius:8px}
+header nav a:hover{background:var(--accent-soft)}
+.chip{font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+.barra{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px max(16px,3vw) 0}
+input,button{font:inherit;font-size:14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;min-width:0}
+input{flex:1 1 220px;max-width:340px}
+button{cursor:pointer}
+button:hover{background:var(--surface2)}
+.legenda{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);margin-left:auto}
+.legenda span{display:inline-flex;align-items:center;gap:6px}
+.legenda i{width:10px;height:10px;border-radius:50%;display:inline-block}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;padding:12px max(16px,3vw) 16px}
+@media (max-width:860px){main{grid-template-columns:minmax(0,1fr)}#painel{order:-1}}
+#palco{min-height:0;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+#palco svg{display:block}
+.ramo{fill:none;stroke:var(--line);stroke-width:1.5}
+.ramo.g{stroke:var(--g);stroke-opacity:.55}
+.no{cursor:pointer}
+.no circle{fill:var(--surface);stroke:var(--g);stroke-width:2}
+.no.fechado circle{fill:var(--g)}
+.no text{fill:var(--ink);font:600 13px Inter,system-ui,sans-serif}
+.no text .qtd{fill:var(--muted);font-weight:400;font-family:"JetBrains Mono",monospace;font-size:11.5px}
+.folha{cursor:pointer}
+.folha circle{fill:var(--g)}
+.folha text{fill:var(--ink);font:13px Inter,system-ui,sans-serif}
+.folha text tspan.ci{fill:var(--muted);font-style:italic;font-size:12px}
+.marcado rect.fundo{fill:var(--mark)}
+rect.fundo{fill:transparent}
+.no:focus-visible,.folha:focus-visible{outline:none}
+.no:focus-visible rect.fundo,.folha:focus-visible rect.fundo,.selecionado rect.fundo{fill:var(--accent-soft)}
+#painel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;align-self:start;font-size:14px}
+#painel h2{margin:0;font-size:18px}
+#painel .sub{color:var(--muted);font-size:13px;margin:2px 0 10px}
+#painel .caminho{font-size:13px;color:var(--muted);margin:0 0 10px}
+#painel ul{margin:6px 0 0;padding-left:18px}
+#painel a{color:var(--accent)}
+.hint{color:var(--muted);font-size:13px}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:12px 14px;font-size:14px;margin:16px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Árvore dos Clados</h1>
+    <p>Hierarquia de <code>rdfs:subClassOf</code> a partir de <code>dino:Dinossauro</code>, com as espécies nas folhas.</p>
+  </div>
+  <nav>
+    <span id="st" class="chip">carregando…</span>
+    <a href="guide.html">Guia</a>
+    <a href="graph.html">Grafo</a>
+    <a href="demo.html">Demo SPARQL</a>
+  </nav>
+</header>
+<div class="barra">
+  <input id="busca" type="search" placeholder="Buscar clado ou espécie…" aria-label="Buscar clado ou espécie" disabled>
+  <button id="abrir" disabled>Expandir tudo</button>
+  <button id="fechar" disabled>Só clados</button>
+  <div class="legenda" id="legenda"></div>
+</div>
+<main>
+  <div id="palco" role="tree" aria-label="Árvore de clados"></div>
+  <aside id="painel" aria-live="polite"><p class="hint">Clique num clado para recolher ou expandir e ver a descrição. Clique numa espécie para abrir a ficha no guia.</p></aside>
+</main>
+
+<script type="module">
+import init, * as ox from "https://cdn.jsdelivr.net/npm/oxigraph@0.5.10/web.js";
+
+const DINO = "http://example.org/dino#";
+const RAIZ = DINO + "Dinossauro";
+const PREFIXOS = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX dino: <${DINO}>
+`;
+const GRUPOS = [
+  { id: "theropoda", clado: DINO + "Theropoda", nome: "Terópodes" },
+  { id: "sauropodomorpha", clado: DINO + "Sauropodomorpha", nome: "Sauropodomorfos" },
+  { id: "ornithischia", clado: DINO + "Ornithischia", nome: "Ornitísquios" },
+  { id: "basal", clado: null, nome: "Basais e incertos" },
+];
+const LINHA = 24, MARGEM = 24, VAO = 36;
+const regua = document.createElement("canvas").getContext("2d");
+function medir(texto, fonte) { regua.font = fonte; return regua.measureText(texto).width; }
+const FONTE_CLADO = "600 13px Inter, system-ui, sans-serif";
+const FONTE_QTD = "400 11.5px 'JetBrains Mono', monospace";
+const FONTE_FOLHA = "400 13px Inter, system-ui, sans-serif";
+const FONTE_CI = "italic 400 12px Inter, system-ui, sans-serif";
+// largura do rótulo a partir do centro do nó (círculo + texto)
+function larguraRotulo(n) {
+  return n.tipo === "clado"
+    ? 10 + medir(n.nome + " ", FONTE_CLADO) + medir(`(${n.total})`, FONTE_QTD)
+    : 10 + medir(n.nome + " ", FONTE_FOLHA) + medir(n.cientifico, FONTE_CI);
+}
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const local = (uri) => uri.slice(uri.lastIndexOf("#") + 1);
+
+let raiz = null;
+const nos = new Map();      // iri -> nó (clados e espécies)
+let selecionado = null;
+let termo = "";
+
+function consultar(store, corpo) {
+  return store.query(PREFIXOS + corpo).map((linha) => {
+    const o = {};
+    for (const [k, v] of linha) o[k] = v.value;
+    return o;
+  });
+}
+
+// Monta uma árvore estrita: cada nó tem um único pai e nenhum nó é visitado
+// duas vezes, então ciclos ou herança múltipla na base não viram laços aqui.
+function montarArvore(store) {
+  // classes definidas por axioma (ex.: Predador) não são clados
+  const classes = consultar(store, `SELECT ?c ?pai ?label ?comment WHERE {
+      ?c rdfs:subClassOf+ dino:Dinossauro ; rdfs:subClassOf ?pai .
+      FILTER(isIRI(?pai))
+      FILTER NOT EXISTS { ?c owl:equivalentClass ?def }
+      OPTIONAL { ?c rdfs:label ?label } OPTIONAL { ?c rdfs:comment ?comment }
+    } ORDER BY ?label`);
+  const especies = consultar(store, `SELECT ?d ?classe ?label ?nome WHERE {
+      ?d a ?classe ; dino:nomeCientifico ?nome ; rdfs:label ?label .
+      ?classe rdfs:subClassOf* dino:Dinossauro .
+      FILTER NOT EXISTS { ?classe owl:equivalentClass ?def }
+    } ORDER BY ?nome`);
+  const raizInfo = consultar(store, `SELECT ?label ?comment WHERE {
+      OPTIONAL { dino:Dinossauro rdfs:label ?label } OPTIONAL { dino:Dinossauro rdfs:comment ?comment } }`)[0] ?? {};
+
+  nos.clear();
+  raiz = { id: RAIZ, tipo: "clado", nome: raizInfo.label ?? "Dinossauro", comentario: raizInfo.comment, filhos: [], aberto: true };
+  nos.set(RAIZ, raiz);
+
+  const paiDe = new Map();
+  for (const c of classes) {
+    if (c.c === RAIZ || paiDe.has(c.c)) continue;           // fica com o primeiro pai
+    paiDe.set(c.c, c.pai);
+    nos.set(c.c, { id: c.c, tipo: "clado", nome: c.label ?? local(c.c), comentario: c.comment, filhos: [], aberto: true });
+  }
+  const descartados = [];
+  for (const [filho, pai] of paiDe) {
+    const p = nos.get(pai);
+    if (!p) { descartados.push(local(filho)); continue; }
+    p.filhos.push(nos.get(filho));
+  }
+  for (const e of especies) {
+    if (nos.has(e.d)) continue;                               // espécie com dois tipos: uma única folha
+    const pai = nos.get(e.classe);
+    if (!pai) continue;
+    const folha = { id: e.d, tipo: "especie", nome: e.label, cientifico: e.nome, chave: local(e.d), filhos: [] };
+    nos.set(e.d, folha);
+    pai.filhos.push(folha);
+  }
+
+  // percorre a partir da raiz marcando visitados; o que sobrar estava num ciclo
+  const vistos = new Set();
+  (function visitar(n, profundidade, grupo, caminho) {
+    vistos.add(n.id);
+    n.profundidade = profundidade;
+    n.grupo = GRUPOS.find((g) => g.clado === n.id) ?? grupo;
+    n.caminho = caminho;
+    n.filhos = n.filhos.filter((f) => !vistos.has(f.id));
+    n.filhos.sort((a, b) => (a.tipo === b.tipo ? a.nome.localeCompare(b.nome) : a.tipo === "clado" ? -1 : 1));
+    for (const f of n.filhos) visitar(f, profundidade + 1, n.grupo, [...caminho, n]);
+    n.total = n.tipo === "especie" ? 1 : n.filhos.reduce((s, f) => s + f.total, 0);
+  })(raiz, 0, GRUPOS[GRUPOS.length - 1], []);
+  for (const id of nos.keys()) if (!vistos.has(id)) { descartados.push(local(id)); nos.delete(id); }
+
+  const nClados = [...nos.values()].filter((n) => n.tipo === "clado").length;
+  $("st").textContent = `${nClados} clados · ${raiz.total} espécies`;
+  if (descartados.length) console.warn("Fora da árvore (ciclo ou pai ausente):", descartados);
+}
+
+function visiveis(n) {
+  return n.tipo === "clado" && n.aberto ? n.filhos : [];
+}
+
+function casa(n) {
+  return termo && (n.nome.toLowerCase().includes(termo) || (n.cientifico ?? "").toLowerCase().includes(termo));
+}
+
+function desenhar() {
+  // layout de cladograma: folhas visíveis em linhas consecutivas, pai na média dos filhos.
+  // Cada coluna começa depois do rótulo de clado mais largo da coluna anterior,
+  // para os ramos saírem do fim do rótulo sem riscar o texto.
+  let linha = 0;
+  const larguraCol = [], visitados = [];
+  (function posicionar(n) {
+    const fs = visiveis(n);
+    n.larg = larguraRotulo(n);
+    visitados.push(n);
+    if (fs.length) larguraCol[n.profundidade] = Math.max(larguraCol[n.profundidade] ?? 0, n.larg);
+    fs.forEach(posicionar);
+    n.y = fs.length ? (fs[0].y + fs[fs.length - 1].y) / 2 : MARGEM + (linha++) * LINHA + LINHA / 2;
+  })(raiz);
+  const xCol = [MARGEM];
+  for (let d = 0; d < larguraCol.length; d++) xCol[d + 1] = xCol[d] + (larguraCol[d] ?? 0) + 6 + VAO;
+  let direita = 0;
+  for (const n of visitados) {
+    n.x = xCol[n.profundidade];
+    direita = Math.max(direita, n.x + n.larg);
+  }
+
+  const largura = Math.ceil(direita) + MARGEM;
+  const altura = MARGEM * 2 + linha * LINHA;
+  const ramos = [], rotulos = [];
+
+  (function emitir(n) {
+    const cor = `--g:var(--g-${n.grupo.id})`;
+    for (const f of visiveis(n)) {
+      const saida = n.x + n.larg + 6, meio = saida + VAO / 2;
+      ramos.push(`<path class="ramo${f.grupo.clado ? " g" : ""}" style="--g:var(--g-${f.grupo.id})" d="M${saida},${n.y}H${meio}V${f.y}H${f.x - 6}"/>`);
+      emitir(f);
+    }
+    const marcado = casa(n) ? " marcado" : "";
+    const sel = selecionado === n ? " selecionado" : "";
+    if (n.tipo === "clado") {
+      rotulos.push(`<g class="no${n.aberto ? "" : " fechado"}${marcado}${sel}" style="${cor}" data-id="${esc(n.id)}" tabindex="0" role="treeitem"
+          aria-expanded="${n.aberto}" aria-level="${n.profundidade + 1}" transform="translate(${n.x},${n.y})">
+        <rect class="fundo" x="-8" y="-11" width="${(n.larg + 14).toFixed(1)}" height="22" rx="6"/>
+        <circle r="5"/>
+        <text x="10" y="4.5">${esc(n.nome)} <tspan class="qtd">(${n.total})</tspan></text>
+        <title>${esc(n.comentario ?? n.nome)}</title>
+      </g>`);
+    } else {
+      rotulos.push(`<g class="folha${marcado}${sel}" style="${cor}" data-id="${esc(n.id)}" tabindex="0" role="treeitem"
+          aria-level="${n.profundidade + 1}" transform="translate(${n.x},${n.y})">
+        <rect class="fundo" x="-8" y="-11" width="${(n.larg + 14).toFixed(1)}" height="22" rx="6"/>
+        <circle r="3.5"/>
+        <text x="10" y="4.5">${esc(n.nome)} <tspan class="ci">${esc(n.cientifico)}</tspan></text>
+      </g>`);
+    }
+  })(raiz);
+
+  $("palco").innerHTML = `<svg width="${largura}" height="${altura}" viewBox="0 0 ${largura} ${altura}">${ramos.join("")}${rotulos.join("")}</svg>`;
+}
+
+function mostrarPainel(n) {
+  const caminho = n.caminho.map((c) => esc(c.nome)).join(" › ");
+  if (n.tipo === "especie") {
+    $("painel").innerHTML = `<h2>${esc(n.nome)}</h2><p class="sub"><i>${esc(n.cientifico)}</i></p>
+      <p class="caminho">${caminho}</p>
+      <a href="guide.html#${encodeURIComponent(n.chave)}">Abrir a ficha no guia →</a>`;
+    return;
+  }
+  const subclados = n.filhos.filter((f) => f.tipo === "clado");
+  const diretas = n.filhos.filter((f) => f.tipo === "especie");
+  $("painel").innerHTML = `<h2>${esc(n.nome)}</h2>
+    <p class="sub">${n.total} espécie(s) no total · ${subclados.length} subclado(s) · ${diretas.length} classificada(s) diretamente aqui</p>
+    ${caminho ? `<p class="caminho">${caminho}</p>` : ""}
+    <p>${esc(n.comentario ?? "Sem descrição na base.")}</p>
+    ${diretas.length ? `<strong>Espécies diretas</strong><ul>${diretas.map((d) =>
+      `<li><a href="guide.html#${encodeURIComponent(d.chave)}">${esc(d.nome)}</a></li>`).join("")}</ul>` : ""}`;
+}
+
+function ativar(n, alternar) {
+  selecionado = n;
+  if (alternar && n.tipo === "clado" && n !== raiz) n.aberto = !n.aberto;
+  mostrarPainel(n);
+  desenhar();
+  document.querySelector(`[data-id="${CSS.escape(n.id)}"]`)?.focus({ preventScroll: true });
+}
+
+function filtrar() {
+  termo = $("busca").value.trim().toLowerCase();
+  if (termo) {
+    // abre o caminho até cada resultado
+    for (const n of nos.values()) if (casa(n)) for (const c of n.caminho) c.aberto = true;
+  }
+  desenhar();
+  const primeiro = document.querySelector("#palco .marcado");
+  primeiro?.scrollIntoView({ block: "center", inline: "nearest" });
+}
+
+$("palco").addEventListener("click", (ev) => {
+  const g = ev.target.closest("[data-id]");
+  if (g) ativar(nos.get(g.dataset.id), true);
+});
+$("palco").addEventListener("keydown", (ev) => {
+  const g = ev.target.closest("[data-id]");
+  if (!g) return;
+  const n = nos.get(g.dataset.id);
+  if (ev.key === "Enter" || ev.key === " ") {
+    ev.preventDefault();
+    if (n.tipo === "especie" && ev.key === "Enter") location.href = "guide.html#" + encodeURIComponent(n.chave);
+    else ativar(n, true);
+  }
+});
+$("busca").addEventListener("input", filtrar);
+$("abrir").addEventListener("click", () => { for (const n of nos.values()) n.aberto = true; desenhar(); });
+$("fechar").addEventListener("click", () => {
+  // mantém os clados visíveis e esconde só as espécies
+  for (const n of nos.values()) if (n.tipo === "clado") n.aberto = n.filhos.some((f) => f.tipo === "clado");
+  raiz.aberto = true;
+  desenhar();
+});
+
+$("legenda").innerHTML = GRUPOS.map((g) => `<span><i style="background:var(--g-${g.id})"></i>${esc(g.nome)}</span>`).join("");
+
+async function iniciar(texto) {
+  await document.fonts.ready;
+  const store = new ox.Store();
+  store.load(texto, { format: "text/turtle", base_iri: "http://example.org/dino" });
+  montarArvore(store);
+  ["busca", "abrir", "fechar"].forEach((id) => { $(id).disabled = false; });
+  desenhar();
+  mostrarPainel(raiz);
+}
+
+function pedirArquivo(msg) {
+  $("st").textContent = "base não carregada";
+  $("palco").innerHTML = `<div class="err">${esc(msg)}</div>
+    <p class="hint" style="margin:0 16px">Rode <code>python3 -m http.server</code> na pasta do projeto e abra <code>http://localhost:8000/tree.html</code>, ou selecione o arquivo:</p>
+    <p style="margin:12px 16px"><input type="file" accept=".ttl" id="arquivo"></p>`;
+  $("arquivo").addEventListener("change", async (ev) => {
+    const f = ev.target.files[0];
+    if (f) iniciar(await f.text());
+  });
+}
+
+try {
+  await init();
+} catch (e) {
+  pedirArquivo(`Não foi possível carregar o Oxigraph (precisa de internet): ${e.message || e}`);
+  throw e;
+}
+try {
+  const r = await fetch("dinossauros.ttl");
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  iniciar(await r.text());
+} catch (e) {
+  pedirArquivo("Não consegui ler dinossauros.ttl automaticamente (abrir o HTML direto do disco bloqueia essa leitura).");
+}
+</script>
+</body>
+</html>
