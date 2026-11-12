@@ -364,6 +364,14 @@ dino:EUA       a dino:Pais ; rdfs:label "Estados Unidos"@pt .
 dino:Mongolia  a dino:Pais ; rdfs:label "Mongolia"@pt .
 dino:Egito     a dino:Pais ; rdfs:label "Egito"@pt .
 dino:Belgica   a dino:Pais ; rdfs:label "Belgica"@pt .
+dino:Canada    a dino:Pais ; rdfs:label "Canada"@pt .
+dino:China     a dino:Pais ; rdfs:label "China"@pt .
+dino:Alemanha  a dino:Pais ; rdfs:label "Alemanha"@pt .
+dino:ReinoUnido a dino:Pais ; rdfs:label "Reino Unido"@pt .
+dino:Madagascar a dino:Pais ; rdfs:label "Madagascar"@pt .
+dino:AfricaDoSul a dino:Pais ; rdfs:label "Africa do Sul"@pt .
+dino:Tanzania  a dino:Pais ; rdfs:label "Tanzania"@pt .
+dino:Marrocos  a dino:Pais ; rdfs:label "Marrocos"@pt .
 
 dino:HellCreek a dino:FormacaoGeologica ; rdfs:label "Formacao Hell Creek"@pt ;
     dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:CretaceoSuperior .
@@ -388,6 +396,64 @@ dino:Huincul a dino:FormacaoGeologica ; rdfs:label "Formacao Huincul"@pt ;
 dino:SainteBarbe a dino:FormacaoGeologica ; rdfs:label "Argilas de Sainte-Barbe"@pt ;
     dino:localizadaEm dino:Belgica ; dino:formacaoDatadaEm dino:CretaceoInferior .
 
+# --- Triassico ---
+dino:Manda a dino:FormacaoGeologica ; rdfs:label "Camadas de Manda"@pt ;
+    dino:localizadaEm dino:Tanzania ; dino:formacaoDatadaEm dino:TriassicoMedio .
+dino:Chinle a dino:FormacaoGeologica ; rdfs:label "Formacao Chinle"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:TriassicoSuperior .
+dino:Trossingen a dino:FormacaoGeologica ; rdfs:label "Formacao Trossingen"@pt ;
+    dino:localizadaEm dino:Alemanha ; dino:formacaoDatadaEm dino:TriassicoSuperior .
+dino:Caturrita a dino:FormacaoGeologica ; rdfs:label "Formacao Caturrita"@pt ;
+    dino:localizadaEm dino:Brasil ; dino:formacaoDatadaEm dino:TriassicoSuperior .
+
+# --- Jurassico ---
+dino:Kayenta a dino:FormacaoGeologica ; rdfs:label "Formacao Kayenta"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:JurassicoInferior .
+dino:Elliot a dino:FormacaoGeologica ; rdfs:label "Formacao Elliot"@pt ;
+    dino:localizadaEm dino:AfricaDoSul ; dino:formacaoDatadaEm dino:JurassicoInferior .
+dino:Charmouth a dino:FormacaoGeologica ; rdfs:label "Argilito de Charmouth"@pt ;
+    dino:localizadaEm dino:ReinoUnido ; dino:formacaoDatadaEm dino:JurassicoInferior .
+dino:Taynton a dino:FormacaoGeologica ; rdfs:label "Calcario de Taynton"@pt ;
+    dino:localizadaEm dino:ReinoUnido ; dino:formacaoDatadaEm dino:JurassicoMedio .
+dino:ShaximiaoInferior a dino:FormacaoGeologica ; rdfs:label "Formacao Shaximiao Inferior"@pt ;
+    dino:localizadaEm dino:China ; dino:formacaoDatadaEm dino:JurassicoMedio .
+dino:ShaximiaoSuperior a dino:FormacaoGeologica ; rdfs:label "Formacao Shaximiao Superior"@pt ;
+    dino:localizadaEm dino:China ; dino:formacaoDatadaEm dino:JurassicoSuperior .
+dino:Tendaguru a dino:FormacaoGeologica ; rdfs:label "Formacao Tendaguru"@pt ;
+    dino:localizadaEm dino:Tanzania ; dino:formacaoDatadaEm dino:JurassicoSuperior .
+
+# --- Cretaceo Inferior ---
+dino:Yixian a dino:FormacaoGeologica ; rdfs:label "Formacao Yixian"@pt ;
+    dino:localizadaEm dino:China ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:Jiufotang a dino:FormacaoGeologica ; rdfs:label "Formacao Jiufotang"@pt ;
+    dino:localizadaEm dino:China ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:CedarMountain a dino:FormacaoGeologica ; rdfs:label "Formacao Cedar Mountain"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:Antlers a dino:FormacaoGeologica ; rdfs:label "Formacao Antlers"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:Oshih a dino:FormacaoGeologica ; rdfs:label "Formacao Oshih"@pt ;
+    dino:localizadaEm dino:Mongolia ; dino:formacaoDatadaEm dino:CretaceoInferior .
+dino:CerroBarcino a dino:FormacaoGeologica ; rdfs:label "Formacao Cerro Barcino"@pt ;
+    dino:localizadaEm dino:Argentina ; dino:formacaoDatadaEm dino:CretaceoInferior .
+
+# --- Cretaceo Superior ---
+dino:KemKem a dino:FormacaoGeologica ; rdfs:label "Grupo Kem Kem"@pt ;
+    dino:localizadaEm dino:Marrocos ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:DinosaurPark a dino:FormacaoGeologica ; rdfs:label "Formacao Dinosaur Park"@pt ;
+    dino:localizadaEm dino:Canada ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:HorseshoeCanyon a dino:FormacaoGeologica ; rdfs:label "Formacao Horseshoe Canyon"@pt ;
+    dino:localizadaEm dino:Canada ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:TwoMedicine a dino:FormacaoGeologica ; rdfs:label "Formacao Two Medicine"@pt ;
+    dino:localizadaEm dino:EUA ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:Nemegt a dino:FormacaoGeologica ; rdfs:label "Formacao Nemegt"@pt ;
+    dino:localizadaEm dino:Mongolia ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:LaColonia a dino:FormacaoGeologica ; rdfs:label "Formacao La Colonia"@pt ;
+    dino:localizadaEm dino:Argentina ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:Maevarano a dino:FormacaoGeologica ; rdfs:label "Formacao Maevarano"@pt ;
+    dino:localizadaEm dino:Madagascar ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+dino:PresidentePrudente a dino:FormacaoGeologica ; rdfs:label "Formacao Presidente Prudente"@pt ;
+    dino:localizadaEm dino:Brasil ; dino:formacaoDatadaEm dino:CretaceoSuperior .
+
 # =====================================================================
 # INDIVIDUOS: paleontologos
 # =====================================================================
@@ -406,6 +472,35 @@ dino:WalterGranger     a dino:Paleontologo ; rdfs:label "Walter Granger"@pt .
 dino:GeorgeBoulenger   a dino:Paleontologo ; rdfs:label "George A. Boulenger"@pt .
 dino:OsvaldoReig       a dino:Paleontologo ; rdfs:label "Osvaldo Reig"@pt .
 dino:EdwinColbert      a dino:Paleontologo ; rdfs:label "Edwin H. Colbert"@pt .
+dino:EdwardCope        a dino:Paleontologo ; rdfs:label "Edward D. Cope"@pt .
+dino:WilliamBuckland   a dino:Paleontologo ; rdfs:label "William Buckland"@pt .
+dino:RichardOwen       a dino:Paleontologo ; rdfs:label "Richard Owen"@pt .
+dino:HermannVonMeyer   a dino:Paleontologo ; rdfs:label "Hermann von Meyer"@pt .
+dino:CharlesDeperet    a dino:Paleontologo ; rdfs:label "Charles Deperet"@pt .
+dino:LawrenceLambe     a dino:Paleontologo ; rdfs:label "Lawrence Lambe"@pt .
+dino:WilliamParks      a dino:Paleontologo ; rdfs:label "William Parks"@pt .
+dino:EdwinHennig       a dino:Paleontologo ; rdfs:label "Edwin Hennig"@pt .
+dino:CharlesGilmore    a dino:Paleontologo ; rdfs:label "Charles W. Gilmore"@pt .
+dino:WillisStovall     a dino:Paleontologo ; rdfs:label "J. Willis Stovall"@pt .
+dino:SamuelWelles      a dino:Paleontologo ; rdfs:label "Samuel P. Welles"@pt .
+dino:EvgenyMaleev      a dino:Paleontologo ; rdfs:label "Evgeny Maleev"@pt .
+dino:AlfredCrompton    a dino:Paleontologo ; rdfs:label "Alfred W. Crompton"@pt .
+dino:YangZhongjian     a dino:Paleontologo ; rdfs:label "Yang Zhongjian"@pt .
+dino:HalszkaOsmolska   a dino:Paleontologo ; rdfs:label "Halszka Osmolska"@pt .
+dino:JackHorner        a dino:Paleontologo ; rdfs:label "John R. Horner"@pt .
+dino:DongZhiming       a dino:Paleontologo ; rdfs:label "Dong Zhiming"@pt .
+dino:JamesKirkland     a dino:Paleontologo ; rdfs:label "James Kirkland"@pt .
+dino:JiQiang           a dino:Paleontologo ; rdfs:label "Ji Qiang"@pt .
+dino:XuXing            a dino:Paleontologo ; rdfs:label "Xu Xing"@pt .
+dino:KristinaCurryRogers a dino:Paleontologo ; rdfs:label "Kristina Curry Rogers"@pt .
+dino:LucianoLeal       a dino:Paleontologo ; rdfs:label "Luciano A. Leal"@pt .
+dino:DarrenNaish       a dino:Paleontologo ; rdfs:label "Darren Naish"@pt .
+dino:PhilipCurrie      a dino:Paleontologo ; rdfs:label "Philip J. Currie"@pt .
+dino:SterlingNesbitt   a dino:Paleontologo ; rdfs:label "Sterling Nesbitt"@pt .
+dino:SergioCabreira    a dino:Paleontologo ; rdfs:label "Sergio F. Cabreira"@pt .
+dino:KamilaBandeira    a dino:Paleontologo ; rdfs:label "Kamila L. N. Bandeira"@pt .
+dino:JoseCarballido    a dino:Paleontologo ; rdfs:label "Jose L. Carballido"@pt .
+dino:CristianPacheco   a dino:Paleontologo ; rdfs:label "Cristian Pacheco"@pt .
 
 # =====================================================================
 # INDIVIDUOS: especies de dinossauros
@@ -571,3 +666,375 @@ dino:Iguanodon_bernissartensis a dino:Ornithopoda ;
     dino:anoDescricao 1881 ; dino:dieta "herbivoro" ;
     dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:SainteBarbe ;
     dino:descritoPor dino:GeorgeBoulenger .
+
+# =====================================================================
+# INDIVIDUOS: expansao (Triassico Medio ao Cretaceo Superior)
+# =====================================================================
+
+# --- Dinosauria de posicao incerta ------------------------------------
+# Nyasasaurus pode ser o dinossauro mais antigo ou um parente proximo;
+# fica na raiz da taxonomia, fiel a essa incerteza.
+dino:Nyasasaurus_parringtoni a dino:Dinossauro ;
+    rdfs:label "Niassassauro"@pt ;
+    dino:nomeCientifico "Nyasasaurus parringtoni" ;
+    dino:comprimentoMetros 2.5 ; dino:massaToneladas 0.04 ;
+    dino:anoDescricao 2013 ; dino:dieta "onivoro" ;
+    dino:viveuEm dino:TriassicoMedio ; dino:encontradoEm dino:Manda ;
+    dino:descritoPor dino:SterlingNesbitt .
+
+# --- Saurischia basais ------------------------------------------------
+dino:Gnathovorax_cabreirai a dino:Saurischia ;
+    rdfs:label "Gnatovorax"@pt ;
+    dino:nomeCientifico "Gnathovorax cabreirai" ;
+    dino:comprimentoMetros 3.0 ; dino:massaToneladas 0.04 ;
+    dino:anoDescricao 2019 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:SantaMaria ;
+    dino:descritoPor dino:CristianPacheco .
+
+# --- Theropoda basais -------------------------------------------------
+dino:Coelophysis_bauri a dino:Theropoda ;
+    rdfs:label "Celofise"@pt ;
+    dino:nomeCientifico "Coelophysis bauri" ;
+    dino:comprimentoMetros 3.0 ; dino:massaToneladas 0.02 ;
+    dino:anoDescricao 1889 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:Chinle ;
+    dino:descritoPor dino:EdwardCope .
+
+dino:Dilophosaurus_wetherilli a dino:Theropoda ;
+    rdfs:label "Dilofossauro"@pt ;
+    dino:nomeCientifico "Dilophosaurus wetherilli" ;
+    dino:comprimentoMetros 7.0 ; dino:massaToneladas 0.4 ;
+    dino:anoDescricao 1954 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:JurassicoInferior ; dino:encontradoEm dino:Kayenta ;
+    dino:descritoPor dino:SamuelWelles .
+
+dino:Megalosaurus_bucklandii a dino:Theropoda ;
+    rdfs:label "Megalossauro"@pt ;
+    dino:nomeCientifico "Megalosaurus bucklandii" ;
+    dino:comprimentoMetros 6.0 ; dino:massaToneladas 0.7 ;
+    dino:anoDescricao 1824 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:JurassicoMedio ; dino:encontradoEm dino:Taynton ;
+    dino:descritoPor dino:WilliamBuckland .
+
+# --- Ceratosauria -----------------------------------------------------
+dino:Ceratosaurus_nasicornis a dino:Ceratosauria ;
+    rdfs:label "Ceratossauro"@pt ;
+    dino:nomeCientifico "Ceratosaurus nasicornis" ;
+    dino:comprimentoMetros 6.0 ; dino:massaToneladas 0.7 ;
+    dino:anoDescricao 1884 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Carnotaurus_sastrei a dino:Abelisauridae ;
+    rdfs:label "Carnotauro"@pt ;
+    dino:nomeCientifico "Carnotaurus sastrei" ;
+    dino:comprimentoMetros 7.8 ; dino:massaToneladas 1.35 ;
+    dino:anoDescricao 1985 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:LaColonia ;
+    dino:descritoPor dino:JoseBonaparte .
+
+dino:Majungasaurus_crenatissimus a dino:Abelisauridae ;
+    rdfs:label "Majungassauro"@pt ;
+    dino:nomeCientifico "Majungasaurus crenatissimus" ;
+    dino:comprimentoMetros 6.5 ; dino:massaToneladas 1.1 ;
+    dino:anoDescricao 1896 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Maevarano ;
+    dino:descritoPor dino:CharlesDeperet ;
+    dino:predouSobre dino:Rapetosaurus_krausei .   # marcas de dentes em ossos
+
+# --- Coelurosauria ----------------------------------------------------
+dino:Albertosaurus_sarcophagus a dino:Tyrannosauridae ;
+    rdfs:label "Albertossauro"@pt ;
+    dino:nomeCientifico "Albertosaurus sarcophagus" ;
+    dino:comprimentoMetros 9.0 ; dino:massaToneladas 2.0 ;
+    dino:anoDescricao 1905 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HorseshoeCanyon ;
+    dino:descritoPor dino:HenryOsborn .
+
+dino:Tarbosaurus_bataar a dino:Tyrannosauridae ;
+    rdfs:label "Tarbossauro"@pt ;
+    dino:nomeCientifico "Tarbosaurus bataar" ;
+    dino:comprimentoMetros 10.0 ; dino:massaToneladas 5.0 ;
+    dino:anoDescricao 1955 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Nemegt ;
+    dino:descritoPor dino:EvgenyMaleev .
+
+dino:Yutyrannus_huali a dino:Coelurosauria ;
+    rdfs:label "Yutirano"@pt ;
+    dino:nomeCientifico "Yutyrannus huali" ;
+    dino:comprimentoMetros 9.0 ; dino:massaToneladas 1.4 ;
+    dino:anoDescricao 2012 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Yixian ;
+    dino:descritoPor dino:XuXing .
+
+dino:Sinosauropteryx_prima a dino:Coelurosauria ;
+    rdfs:label "Sinossauropterix"@pt ;
+    dino:nomeCientifico "Sinosauropteryx prima" ;
+    dino:comprimentoMetros 1.0 ; dino:massaToneladas 0.0006 ;
+    dino:anoDescricao 1996 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Yixian ;
+    dino:descritoPor dino:JiQiang .
+
+dino:Mirischia_asymmetrica a dino:Coelurosauria ;
+    rdfs:label "Mirischia"@pt ;
+    dino:nomeCientifico "Mirischia asymmetrica" ;
+    dino:comprimentoMetros 2.1 ; dino:massaToneladas 0.007 ;
+    dino:anoDescricao 2004 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Romualdo ;
+    dino:descritoPor dino:DarrenNaish , dino:DavidMartill .
+
+dino:Oviraptor_philoceratops a dino:Coelurosauria ;
+    rdfs:label "Oviraptor"@pt ;
+    dino:nomeCientifico "Oviraptor philoceratops" ;
+    dino:comprimentoMetros 1.6 ; dino:massaToneladas 0.03 ;
+    dino:anoDescricao 1924 ; dino:dieta "onivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Djadochta ;
+    dino:descritoPor dino:HenryOsborn .
+
+dino:Gallimimus_bullatus a dino:Ornithomimosauria ;
+    rdfs:label "Galimimo"@pt ;
+    dino:nomeCientifico "Gallimimus bullatus" ;
+    dino:comprimentoMetros 6.0 ; dino:massaToneladas 0.44 ;
+    dino:anoDescricao 1972 ; dino:dieta "onivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Nemegt ;
+    dino:descritoPor dino:HalszkaOsmolska .
+
+dino:Struthiomimus_altus a dino:Ornithomimosauria ;
+    rdfs:label "Estrutiomimo"@pt ;
+    dino:nomeCientifico "Struthiomimus altus" ;
+    dino:comprimentoMetros 4.3 ; dino:massaToneladas 0.15 ;
+    dino:anoDescricao 1902 ; dino:dieta "onivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:DinosaurPark ;
+    dino:descritoPor dino:LawrenceLambe .
+
+dino:Microraptor_zhaoianus a dino:Dromaeosauridae ;
+    rdfs:label "Microraptor"@pt ;
+    dino:nomeCientifico "Microraptor zhaoianus" ;
+    dino:comprimentoMetros 0.8 ; dino:massaToneladas 0.001 ;
+    dino:anoDescricao 2000 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Jiufotang ;
+    dino:descritoPor dino:XuXing .
+
+dino:Utahraptor_ostrommaysi a dino:Dromaeosauridae ;
+    rdfs:label "Utahraptor"@pt ;
+    dino:nomeCientifico "Utahraptor ostrommaysi" ;
+    dino:comprimentoMetros 6.0 ; dino:massaToneladas 0.5 ;
+    dino:anoDescricao 1993 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:CedarMountain ;
+    dino:descritoPor dino:JamesKirkland .
+
+# --- Carcharodontosauridae --------------------------------------------
+dino:Acrocanthosaurus_atokensis a dino:Carcharodontosauridae ;
+    rdfs:label "Acrocantossauro"@pt ;
+    dino:nomeCientifico "Acrocanthosaurus atokensis" ;
+    dino:comprimentoMetros 11.5 ; dino:massaToneladas 6.2 ;
+    dino:anoDescricao 1950 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Antlers ;
+    dino:descritoPor dino:WillisStovall .
+
+dino:Carcharodontosaurus_saharicus a dino:Carcharodontosauridae ;
+    rdfs:label "Carcarodontossauro"@pt ;
+    dino:nomeCientifico "Carcharodontosaurus saharicus" ;
+    dino:comprimentoMetros 12.0 ; dino:massaToneladas 6.5 ;
+    dino:anoDescricao 1925 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:KemKem ;
+    dino:descritoPor dino:CharlesDeperet .
+
+dino:Mapusaurus_roseae a dino:Carcharodontosauridae ;
+    rdfs:label "Mapussauro"@pt ;
+    dino:nomeCientifico "Mapusaurus roseae" ;
+    dino:comprimentoMetros 11.5 ; dino:massaToneladas 5.0 ;
+    dino:anoDescricao 2006 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Huincul ;
+    dino:descritoPor dino:RodolfoCoria , dino:PhilipCurrie .
+
+# --- Sauropodomorpha --------------------------------------------------
+# Buriolestes: sauropodomorfo antigo e ainda carnivoro, antes da
+# transicao para a herbivoria do grupo.
+dino:Buriolestes_schultzi a dino:Sauropodomorpha ;
+    rdfs:label "Buriolestes"@pt ;
+    dino:nomeCientifico "Buriolestes schultzi" ;
+    dino:comprimentoMetros 1.5 ; dino:massaToneladas 0.007 ;
+    dino:anoDescricao 2016 ; dino:dieta "carnivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:SantaMaria ;
+    dino:descritoPor dino:SergioCabreira , dino:MaxLanger .
+
+dino:Unaysaurus_tolentinoi a dino:Sauropodomorpha ;
+    rdfs:label "Unaissauro"@pt ;
+    dino:nomeCientifico "Unaysaurus tolentinoi" ;
+    dino:comprimentoMetros 2.5 ; dino:massaToneladas 0.07 ;
+    dino:anoDescricao 2004 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:Caturrita ;
+    dino:descritoPor dino:LucianoLeal .
+
+dino:Plateosaurus_engelhardti a dino:Sauropodomorpha ;
+    rdfs:label "Plateossauro"@pt ;
+    dino:nomeCientifico "Plateosaurus engelhardti" ;
+    dino:comprimentoMetros 8.0 ; dino:massaToneladas 0.9 ;
+    dino:anoDescricao 1837 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:TriassicoSuperior ; dino:encontradoEm dino:Trossingen ;
+    dino:descritoPor dino:HermannVonMeyer .
+
+dino:Massospondylus_carinatus a dino:Sauropodomorpha ;
+    rdfs:label "Massospondilo"@pt ;
+    dino:nomeCientifico "Massospondylus carinatus" ;
+    dino:comprimentoMetros 4.0 ; dino:massaToneladas 0.15 ;
+    dino:anoDescricao 1854 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoInferior ; dino:encontradoEm dino:Elliot ;
+    dino:descritoPor dino:RichardOwen .
+
+dino:Shunosaurus_lii a dino:Sauropoda ;
+    rdfs:label "Shunossauro"@pt ;
+    dino:nomeCientifico "Shunosaurus lii" ;
+    dino:comprimentoMetros 9.5 ; dino:massaToneladas 3.0 ;
+    dino:anoDescricao 1983 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoMedio ; dino:encontradoEm dino:ShaximiaoInferior ;
+    dino:descritoPor dino:DongZhiming .
+
+dino:Mamenchisaurus_hochuanensis a dino:Sauropoda ;
+    rdfs:label "Mamenquissauro"@pt ;
+    dino:nomeCientifico "Mamenchisaurus hochuanensis" ;
+    dino:comprimentoMetros 22.0 ; dino:massaToneladas 15.0 ;
+    dino:anoDescricao 1972 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:ShaximiaoSuperior ;
+    dino:descritoPor dino:YangZhongjian .
+
+dino:Camarasaurus_supremus a dino:Sauropoda ;
+    rdfs:label "Camarassauro"@pt ;
+    dino:nomeCientifico "Camarasaurus supremus" ;
+    dino:comprimentoMetros 18.0 ; dino:massaToneladas 20.0 ;
+    dino:anoDescricao 1877 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:EdwardCope .
+
+dino:Apatosaurus_ajax a dino:Diplodocidae ;
+    rdfs:label "Apatossauro"@pt ;
+    dino:nomeCientifico "Apatosaurus ajax" ;
+    dino:comprimentoMetros 22.0 ; dino:massaToneladas 20.0 ;
+    dino:anoDescricao 1877 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Brontosaurus_excelsus a dino:Diplodocidae ;
+    rdfs:label "Brontossauro"@pt ;
+    dino:nomeCientifico "Brontosaurus excelsus" ;
+    dino:comprimentoMetros 22.0 ; dino:massaToneladas 15.0 ;
+    dino:anoDescricao 1879 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Morrison ;
+    dino:descritoPor dino:OthnielMarsh .
+
+dino:Patagotitan_mayorum a dino:Titanosauria ;
+    rdfs:label "Patagotitan"@pt ;
+    dino:nomeCientifico "Patagotitan mayorum" ;
+    dino:comprimentoMetros 31.0 ; dino:massaToneladas 57.0 ;
+    dino:anoDescricao 2017 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:CerroBarcino ;
+    dino:descritoPor dino:JoseCarballido .
+
+dino:Rapetosaurus_krausei a dino:Titanosauria ;
+    rdfs:label "Rapetossauro"@pt ;
+    dino:nomeCientifico "Rapetosaurus krausei" ;
+    dino:comprimentoMetros 15.0 ; dino:massaToneladas 10.0 ;
+    dino:anoDescricao 2001 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:Maevarano ;
+    dino:descritoPor dino:KristinaCurryRogers .
+
+dino:Austroposeidon_magnificus a dino:Titanosauria ;
+    rdfs:label "Austroposeidon"@pt ;
+    dino:nomeCientifico "Austroposeidon magnificus" ;
+    dino:comprimentoMetros 25.0 ; dino:massaToneladas 30.0 ;
+    dino:anoDescricao 2016 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:PresidentePrudente ;
+    dino:descritoPor dino:KamilaBandeira .
+
+# --- Ornithischia -----------------------------------------------------
+dino:Heterodontosaurus_tucki a dino:Ornithischia ;
+    rdfs:label "Heterodontossauro"@pt ;
+    dino:nomeCientifico "Heterodontosaurus tucki" ;
+    dino:comprimentoMetros 1.2 ; dino:massaToneladas 0.003 ;
+    dino:anoDescricao 1962 ; dino:dieta "onivoro" ;
+    dino:viveuEm dino:JurassicoInferior ; dino:encontradoEm dino:Elliot ;
+    dino:descritoPor dino:AlfredCrompton .
+
+dino:Scelidosaurus_harrisonii a dino:Thyreophora ;
+    rdfs:label "Scelidossauro"@pt ;
+    dino:nomeCientifico "Scelidosaurus harrisonii" ;
+    dino:comprimentoMetros 4.0 ; dino:massaToneladas 0.27 ;
+    dino:anoDescricao 1861 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoInferior ; dino:encontradoEm dino:Charmouth ;
+    dino:descritoPor dino:RichardOwen .
+
+dino:Kentrosaurus_aethiopicus a dino:Stegosauria ;
+    rdfs:label "Kentrossauro"@pt ;
+    dino:nomeCientifico "Kentrosaurus aethiopicus" ;
+    dino:comprimentoMetros 4.5 ; dino:massaToneladas 1.0 ;
+    dino:anoDescricao 1915 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:JurassicoSuperior ; dino:encontradoEm dino:Tendaguru ;
+    dino:descritoPor dino:EdwinHennig .
+
+dino:Euoplocephalus_tutus a dino:Ankylosauria ;
+    rdfs:label "Euoplocefalo"@pt ;
+    dino:nomeCientifico "Euoplocephalus tutus" ;
+    dino:comprimentoMetros 5.5 ; dino:massaToneladas 2.3 ;
+    dino:anoDescricao 1902 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:DinosaurPark ;
+    dino:descritoPor dino:LawrenceLambe .
+
+# Tenontosaurus: associado a dentes e esqueletos de Deinonychus em
+# Cloverly. Registrado pela inversa presaDe, que a consulta 2.4 cobre.
+dino:Tenontosaurus_tilletti a dino:Ornithopoda ;
+    rdfs:label "Tenontossauro"@pt ;
+    dino:nomeCientifico "Tenontosaurus tilletti" ;
+    dino:comprimentoMetros 7.0 ; dino:massaToneladas 1.0 ;
+    dino:anoDescricao 1970 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Cloverly ;
+    dino:descritoPor dino:JohnOstrom ;
+    dino:presaDe dino:Deinonychus_antirrhopus .
+
+dino:Parasaurolophus_walkeri a dino:Hadrosauridae ;
+    rdfs:label "Parassaurolofo"@pt ;
+    dino:nomeCientifico "Parasaurolophus walkeri" ;
+    dino:comprimentoMetros 9.5 ; dino:massaToneladas 2.5 ;
+    dino:anoDescricao 1922 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:DinosaurPark ;
+    dino:descritoPor dino:WilliamParks .
+
+dino:Corythosaurus_casuarius a dino:Hadrosauridae ;
+    rdfs:label "Coritossauro"@pt ;
+    dino:nomeCientifico "Corythosaurus casuarius" ;
+    dino:comprimentoMetros 9.0 ; dino:massaToneladas 3.0 ;
+    dino:anoDescricao 1914 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:DinosaurPark ;
+    dino:descritoPor dino:BarnumBrown .
+
+dino:Maiasaura_peeblesorum a dino:Hadrosauridae ;
+    rdfs:label "Maiassaura"@pt ;
+    dino:nomeCientifico "Maiasaura peeblesorum" ;
+    dino:comprimentoMetros 9.0 ; dino:massaToneladas 3.0 ;
+    dino:anoDescricao 1979 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:TwoMedicine ;
+    dino:descritoPor dino:JackHorner .
+
+dino:Psittacosaurus_mongoliensis a dino:Ceratopsia ;
+    rdfs:label "Psitacossauro"@pt ;
+    dino:nomeCientifico "Psittacosaurus mongoliensis" ;
+    dino:comprimentoMetros 2.0 ; dino:massaToneladas 0.02 ;
+    dino:anoDescricao 1923 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoInferior ; dino:encontradoEm dino:Oshih ;
+    dino:descritoPor dino:HenryOsborn .
+
+dino:Styracosaurus_albertensis a dino:Ceratopsidae ;
+    rdfs:label "Estiracossauro"@pt ;
+    dino:nomeCientifico "Styracosaurus albertensis" ;
+    dino:comprimentoMetros 5.5 ; dino:massaToneladas 2.7 ;
+    dino:anoDescricao 1913 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:DinosaurPark ;
+    dino:descritoPor dino:LawrenceLambe .
+
+dino:Pachycephalosaurus_wyomingensis a dino:Pachycephalosauria ;
+    rdfs:label "Paquicefalossauro"@pt ;
+    dino:nomeCientifico "Pachycephalosaurus wyomingensis" ;
+    dino:comprimentoMetros 4.5 ; dino:massaToneladas 0.45 ;
+    dino:anoDescricao 1931 ; dino:dieta "herbivoro" ;
+    dino:viveuEm dino:CretaceoSuperior ; dino:encontradoEm dino:HellCreek ;
+    dino:descritoPor dino:CharlesGilmore .
