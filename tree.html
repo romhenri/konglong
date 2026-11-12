@@ -42,8 +42,7 @@ button:hover{background:var(--surface2)}
 .legenda{display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted);margin-left:auto}
 .legenda span{display:inline-flex;align-items:center;gap:6px}
 .legenda i{width:10px;height:10px;border-radius:50%;display:inline-block}
-main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;padding:12px max(16px,3vw) 16px}
-@media (max-width:860px){main{grid-template-columns:minmax(0,1fr)}#painel{order:-1}}
+main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);padding:12px max(16px,3vw) 16px}
 #palco{min-height:0;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
 #palco svg{display:block}
 .ramo{fill:none;stroke:var(--line);stroke-width:1.5}
@@ -61,12 +60,6 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;
 rect.fundo{fill:transparent}
 .no:focus-visible,.folha:focus-visible{outline:none}
 .no:focus-visible rect.fundo,.folha:focus-visible rect.fundo,.selecionado rect.fundo{fill:var(--accent-soft)}
-#painel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;align-self:start;font-size:14px}
-#painel h2{margin:0;font-size:18px}
-#painel .sub{color:var(--muted);font-size:13px;margin:2px 0 10px}
-#painel .caminho{font-size:13px;color:var(--muted);margin:0 0 10px}
-#painel ul{margin:6px 0 0;padding-left:18px}
-#painel a{color:var(--accent)}
 .hint{color:var(--muted);font-size:13px}
 .err{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:12px 14px;font-size:14px;margin:16px}
 </style>
@@ -92,7 +85,6 @@ rect.fundo{fill:transparent}
 </div>
 <main>
   <div id="palco" role="tree" aria-label="Árvore de clados"></div>
-  <aside id="painel" aria-live="polite"><p class="hint">Clique num clado para recolher ou expandir e ver a descrição. Clique numa espécie para abrir a ficha no guia.</p></aside>
 </main>
 
 <script type="module">
@@ -268,28 +260,9 @@ function desenhar() {
   $("palco").innerHTML = `<svg width="${largura}" height="${altura}" viewBox="0 0 ${largura} ${altura}">${ramos.join("")}${rotulos.join("")}</svg>`;
 }
 
-function mostrarPainel(n) {
-  const caminho = n.caminho.map((c) => esc(c.nome)).join(" › ");
-  if (n.tipo === "especie") {
-    $("painel").innerHTML = `<h2>${esc(n.nome)}</h2><p class="sub"><i>${esc(n.cientifico)}</i></p>
-      <p class="caminho">${caminho}</p>
-      <a href="guide.html#${encodeURIComponent(n.chave)}">Abrir a ficha no guia →</a>`;
-    return;
-  }
-  const subclados = n.filhos.filter((f) => f.tipo === "clado");
-  const diretas = n.filhos.filter((f) => f.tipo === "especie");
-  $("painel").innerHTML = `<h2>${esc(n.nome)}</h2>
-    <p class="sub">${n.total} espécie(s) no total · ${subclados.length} subclado(s) · ${diretas.length} classificada(s) diretamente aqui</p>
-    ${caminho ? `<p class="caminho">${caminho}</p>` : ""}
-    <p>${esc(n.comentario ?? "Sem descrição na base.")}</p>
-    ${diretas.length ? `<strong>Espécies diretas</strong><ul>${diretas.map((d) =>
-      `<li><a href="guide.html#${encodeURIComponent(d.chave)}">${esc(d.nome)}</a></li>`).join("")}</ul>` : ""}`;
-}
-
 function ativar(n, alternar) {
   selecionado = n;
   if (alternar && n.tipo === "clado" && n !== raiz) n.aberto = !n.aberto;
-  mostrarPainel(n);
   desenhar();
   document.querySelector(`[data-id="${CSS.escape(n.id)}"]`)?.focus({ preventScroll: true });
 }
@@ -307,7 +280,10 @@ function filtrar() {
 
 $("palco").addEventListener("click", (ev) => {
   const g = ev.target.closest("[data-id]");
-  if (g) ativar(nos.get(g.dataset.id), true);
+  if (!g) return;
+  const n = nos.get(g.dataset.id);
+  if (n.tipo === "especie") location.href = "guide.html#" + encodeURIComponent(n.chave);
+  else ativar(n, true);
 });
 $("palco").addEventListener("keydown", (ev) => {
   const g = ev.target.closest("[data-id]");
@@ -337,7 +313,6 @@ async function iniciar(texto) {
   montarArvore(store);
   ["busca", "abrir", "fechar"].forEach((id) => { $(id).disabled = false; });
   desenhar();
-  mostrarPainel(raiz);
 }
 
 function pedirArquivo(msg) {

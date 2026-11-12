@@ -314,7 +314,7 @@ Sirva a pasta do mesmo jeito e abra `http://localhost:8000/guide.html`.
 
 ### Árvore dos clados
 
-`tree.html` desenha só a hierarquia taxonômica, como um cladograma: os clados ligados por `rdfs:subClassOf` a partir de `dino:Dinossauro`, e cada espécie como folha do seu clado mais específico. É uma árvore estrita, sem as arestas de predação, época ou formação do `graph.html`. Cada nó aparece uma única vez, e classes definidas por axioma, como `Predador`, ficam de fora porque não são clados. Clicar num clado recolhe ou expande o ramo e mostra a descrição; clicar numa espécie leva à ficha no `guide.html`. A busca destaca os resultados e abre o caminho até eles.
+`tree.html` desenha só a hierarquia taxonômica, como um cladograma: os clados ligados por `rdfs:subClassOf` a partir de `dino:Dinossauro`, e cada espécie como folha do seu clado mais específico. É uma árvore estrita, sem as arestas de predação, época ou formação do `graph.html`. Cada nó aparece uma única vez, e classes definidas por axioma, como `Predador`, ficam de fora porque não são clados. Clicar num clado recolhe ou expande o ramo (a descrição aparece ao passar o mouse); clicar numa espécie leva à ficha no `guide.html`. A busca destaca os resultados e abre o caminho até eles.
 
 ## Arquivos
 
