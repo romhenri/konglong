@@ -213,7 +213,7 @@ ORDER BY DESC(?especies)`,
   },
   {
     n: "2.7", tipo: "ASK", titulo: "Há dinossauro brasileiro do Triássico?",
-    descricao: "Esperado: true (Staurikosaurus e Saturnalia, Formação Santa Maria).",
+    descricao: "Esperado: true (cinco espécies, nas formações Santa Maria e Caturrita, RS).",
     sparql: `ASK {
     ?d dino:encontradoEm/dino:localizadaEm dino:Brasil ;
        dino:viveuEm/dino:subperiodoDe* dino:Triassico .

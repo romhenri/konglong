@@ -8,30 +8,30 @@ base de conhecimento modelada com RDF, RDFS e OWL em Turtle (`dinossauros.ttl`) 
 
 | Requisito do roteiro | Mínimo | Entregue | Onde comprovar |
 |---|---|---|---|
-| Hierarquia `rdfs:subClassOf` | 8 classes, 2 níveis abaixo da raiz | 23 classes; 3 níveis abaixo de Dinossauro (Saurischia › Theropoda › Tyrannosauridae) | `dinossauros.ttl` 24–93 · consulta 1.4 |
-| Propriedades com domain/range | 10 (5 de objeto + 5 de dados) | 10 de objeto + 7 de dados, todas com domain e range | `dinossauros.ttl` 152–258 |
-| Instâncias com valores plausíveis | 25 | 58 (19 espécies, 8 intervalos, formações, países, paleontólogos) | consulta `[0]` · [Fontes dos dados](#fontes-dos-dados) |
-| Triplas | 50 | 495 | consulta `[0]` |
+| Hierarquia `rdfs:subClassOf` | 8 classes, 2 níveis abaixo da raiz | 33 classes; 4 níveis abaixo de Dinossauro (Saurischia › Theropoda › Coelurosauria › Tyrannosauridae) | `dinossauros.ttl` 24–158 · consulta 1.4 |
+| Propriedades com domain/range | 10 (5 de objeto + 5 de dados) | 10 de objeto + 7 de dados, todas com domain e range | `dinossauros.ttl` 198–308 |
+| Instâncias com valores plausíveis | 25 | 167 (63 espécies, 11 intervalos, 36 formações, 14 países, 43 paleontólogos) | consulta `[0]` · [Fontes dos dados](#fontes-dos-dados) |
+| Triplas | 50 | 1169 | consulta `[0]` |
 | Construções OWL justificadas | 5 | 8 tipos distintos | [Construções OWL](#construções-owl-e-justificativa) · consulta 1.6 |
 | Consultas `g.triples()` variando padrões | 5 | 7, cobrindo todas as combinações de fixo/`None` | [Parte 1](#parte-1-gtriples) |
 | SELECT com FILTER e com ORDER BY/agregação | 1 de cada | 5 SELECTs (2.1 FILTER + ORDER BY; 2.2 e 2.5 agregação) | 2.1–2.5 |
 | ASK | 1 | 2 (um `false`, um `true`) | 2.6, 2.7 |
-| CONSTRUCT | 1 | 1, gera 18 triplas inferidas | 2.8 |
+| CONSTRUCT | 1 | 1, gera 51 triplas inferidas | 2.8 |
 | Update: INSERT, DELETE, DELETE/INSERT | 1 de cada | 3, com antes/depois impresso | 2.9, 2.10, 2.11 |
 | App Python que carrega o `.ttl` e imprime cada consulta com número e propósito | sim | `Graph().parse(...)` e cabeçalho `[n] propósito` em cada consulta | `consultas.py` |
 | README com resumo, entidades, taxonomia e como executar | sim | este arquivo | [Como executar](#como-executar) |
 
 ## Resumo da base
 
-A base descreve **19 espécies de dinossauros** reais, classificadas por **clados** (Saurischia, Theropoda, Ceratopsia...), situadas na **escala de tempo geológico** (Era > Período > Época), ligadas às **formações geológicas** e aos **países** onde foram encontradas, e aos **paleontólogos** que as descreveram. Também registra relações de **predação** com evidência fóssil (ex.: os "Dinossauros Lutadores", Velociraptor x Protoceratops). Inclui três espécies brasileiras: Irritator, Saturnalia e Staurikosaurus.
+A base descreve **63 espécies de dinossauros** reais, do Triássico Médio ao fim do Cretáceo, classificadas por **clados** (Saurischia, Theropoda, Ceratopsia...), situadas na **escala de tempo geológico** (Era > Período > Época), ligadas às **formações geológicas** e aos **países** onde foram encontradas, e aos **paleontólogos** que as descreveram. Também registra relações de **predação** com evidência fóssil (ex.: os "Dinossauros Lutadores", Velociraptor x Protoceratops). Inclui oito espécies brasileiras: Irritator, Mirischia, Saturnalia, Staurikosaurus, Gnathovorax, Buriolestes, Unaysaurus e Austroposeidon.
 
 | Item | Quantidade | Mínimo |
 |---|---|---|
-| Triplas | 495 | 50 |
-| Classes | 23 | 8 |
+| Triplas | 1169 | 50 |
+| Classes | 33 | 8 |
 | Propriedades de objeto | 10 | 5 |
 | Propriedades de dados | 7 | 5 |
-| Indivíduos | 58 | 25 |
+| Indivíduos | 167 | 25 |
 | Tipos de construção OWL | 8 | 5 |
 
 Esses números são recalculados e impressos pela própria aplicação (consulta `[0]`). O `.ttl` é carregado com `Graph().parse(TTL, format="turtle")` na primeira linha do programa; se houvesse erro de sintaxe, nada mais rodaria.
@@ -42,11 +42,11 @@ Esses números são recalculados e impressos pela própria aplicação (consulta
 ```
 [0] Estatisticas da base x minimos do roteiro
 ------------------------------------------------------------------------
-  Triplas                     495  (minimo 50) OK
-  Classes                      23  (minimo 8) OK
+  Triplas                    1169  (minimo 50) OK
+  Classes                      33  (minimo 8) OK
   Propriedades de objeto       10  (minimo 5) OK
   Propriedades de dados         7  (minimo 5) OK
-  Individuos                   58  (minimo 25) OK
+  Individuos                  167  (minimo 25) OK
   Tipos de construcao OWL       8  (minimo 5) OK
   Construcoes OWL usadas:
     - owl:TransitiveProperty: 1
@@ -63,38 +63,47 @@ Esses números são recalculados e impressos pela própria aplicação (consulta
 
 ## Taxonomia (hierarquia de classes)
 
-A taxonomia de dinossauros é naturalmente profunda: chega a **3 níveis abaixo da raiz** `Dinossauro`.
+A taxonomia de dinossauros é naturalmente profunda: chega a **4 níveis abaixo da raiz** `Dinossauro`.
 
 ```
-Dinossauro
-├── Saurischia            (quadril de lagarto)
-│   ├── Theropoda         (bípedes, maioria carnívora)
-│   │   ├── Tyrannosauridae     Tyrannosaurus rex
-│   │   ├── Dromaeosauridae     Velociraptor, Deinonychus
-│   │   ├── Spinosauridae       Spinosaurus, Irritator (BR)
-│   │   └── Allosauroidea       Allosaurus, Giganotosaurus
-│   ├── Sauropodomorpha         Saturnalia (BR)
-│   │   └── Sauropoda           Brachiosaurus, Diplodocus, Argentinosaurus
-│   └── (basais)                Herrerasaurus, Staurikosaurus (BR)
-├── Ornithischia          (quadril de ave)
-│   ├── Ornithopoda             Edmontosaurus, Iguanodon
-│   ├── Ceratopsia              Triceratops, Protoceratops
-│   └── Thyreophora
-│       ├── Stegosauria         Stegosaurus
-│       └── Ankylosauria        Ankylosaurus
+Dinossauro                      Nyasasaurus (posição incerta)
+├── Saurischia            (quadril de lagarto)   Herrerasaurus, Staurikosaurus (BR), Gnathovorax (BR)
+│   ├── Theropoda         (bípedes, maioria carnívora)   Coelophysis, Dilophosaurus, Megalosaurus
+│   │   ├── Ceratosauria            Ceratosaurus
+│   │   │   └── Abelisauridae       Carnotaurus, Majungasaurus
+│   │   ├── Coelurosauria           Yutyrannus, Sinosauropteryx, Oviraptor, Mirischia (BR)
+│   │   │   ├── Tyrannosauridae     Tyrannosaurus rex, Albertosaurus, Tarbosaurus
+│   │   │   ├── Dromaeosauridae     Velociraptor, Deinonychus, Microraptor, Utahraptor
+│   │   │   └── Ornithomimosauria   Gallimimus, Struthiomimus
+│   │   ├── Spinosauridae           Spinosaurus, Irritator (BR)
+│   │   └── Allosauroidea           Allosaurus
+│   │       └── Carcharodontosauridae   Giganotosaurus, Carcharodontosaurus, Acrocanthosaurus, Mapusaurus
+│   └── Sauropodomorpha             Saturnalia (BR), Buriolestes (BR), Unaysaurus (BR), Plateosaurus, Massospondylus
+│       └── Sauropoda               Brachiosaurus, Camarasaurus, Mamenchisaurus, Shunosaurus
+│           ├── Diplodocidae        Diplodocus, Apatosaurus, Brontosaurus
+│           └── Titanosauria        Argentinosaurus, Patagotitan, Rapetosaurus, Austroposeidon (BR)
+├── Ornithischia          (quadril de ave)   Heterodontosaurus
+│   ├── Ornithopoda                 Iguanodon, Tenontosaurus
+│   │   └── Hadrosauridae           Edmontosaurus, Parasaurolophus, Corythosaurus, Maiasaura
+│   ├── Ceratopsia                  Protoceratops, Psittacosaurus
+│   │   └── Ceratopsidae            Triceratops, Styracosaurus
+│   ├── Pachycephalosauria          Pachycephalosaurus
+│   └── Thyreophora                 Scelidosaurus
+│       ├── Stegosauria             Stegosaurus, Kentrosaurus
+│       └── Ankylosauria            Ankylosaurus, Euoplocephalus
 └── Predador              (classe definida por restrição OWL)
 
 IntervaloGeologico
 ├── Era        Mesozoico
 ├── Periodo    Triassico, Jurassico, Cretaceo
-└── Epoca      Triassico Superior, Jurassico Superior, Cretaceo Inferior, Cretaceo Superior
+└── Epoca      Triassico Medio/Superior, Jurassico Inferior/Medio/Superior, Cretaceo Inferior/Superior
 
-FormacaoGeologica   Hell Creek, Morrison, Santa Maria, Romualdo, ... (11)
-Pais                Brasil, Argentina, EUA, Mongolia, Egito, Belgica
-Paleontologo        Marsh, Osborn, Coria, Langer, ... (14)
+FormacaoGeologica   Hell Creek, Morrison, Santa Maria, Romualdo, Dinosaur Park, Nemegt, ... (36)
+Pais                Brasil, Argentina, EUA, Canada, China, Mongolia, ... (14)
+Paleontologo        Marsh, Cope, Osborn, Owen, Coria, Langer, Xu Xing, ... (43)
 ```
 
-**Decisão de modelagem: clado é classe, espécie é indivíduo do clado mais específico.** Assim, `Tyrannosaurus_rex a Tyrannosauridae` basta; a pertinência a Theropoda, Saurischia e Dinossauro decorre de `rdfs:subClassOf`, sem repetir tipos, e é recuperada nas consultas com o caminho SPARQL `rdf:type/rdfs:subClassOf*`. A espécie é indivíduo porque os fatos são dela (comprimento, massa, ano, autor) e ela recebe propriedades de dados diretamente. Espécies basais (Herrerasaurus, Staurikosaurus, Saturnalia) ficam em clados mais altos, o que é fiel à incerteza filogenética real.
+**Decisão de modelagem: clado é classe, espécie é indivíduo do clado mais específico.** Assim, `Tyrannosaurus_rex a Tyrannosauridae` basta; a pertinência a Coelurosauria, Theropoda, Saurischia e Dinossauro decorre de `rdfs:subClassOf`, sem repetir tipos, e é recuperada nas consultas com o caminho SPARQL `rdf:type/rdfs:subClassOf*`. A espécie é indivíduo porque os fatos são dela (comprimento, massa, ano, autor) e ela recebe propriedades de dados diretamente. Espécies basais (Herrerasaurus, Staurikosaurus, Saturnalia, Coelophysis...) ficam em clados mais altos, o que é fiel à incerteza filogenética real; o Nyasasaurus, que pode nem ser dinossauro, fica na própria raiz.
 
 A escala de tempo usa **indivíduos** ligados por `subperiodoDe` (transitiva): `JurassicoSuperior subperiodoDe Jurassico subperiodoDe Mesozoico`. As espécies declaram só a época (`viveuEm JurassicoSuperior`); período e era são inferidos. Datas em milhões de anos atrás (Ma), segundo a ICS 2023:
 
@@ -104,7 +113,10 @@ A escala de tempo usa **indivíduos** ligados por `subperiodoDe` (transitiva): `
 | Triássico | Período | 251,9 | 201,4 |
 | Jurássico | Período | 201,4 | 143,1 |
 | Cretáceo | Período | 143,1 | 66,0 |
+| Triássico Médio | Época | 247,2 | 237,0 |
 | Triássico Superior | Época | 237,0 | 201,4 |
+| Jurássico Inferior | Época | 201,4 | 174,7 |
+| Jurássico Médio | Época | 174,7 | 161,5 |
 | Jurássico Superior | Época | 161,5 | 143,1 |
 | Cretáceo Inferior | Época | 143,1 | 100,5 |
 | Cretáceo Superior | Época | 100,5 | 66,0 |
@@ -147,10 +159,10 @@ Cada consulta tem comentários `Busca:` e `Esperado:` no código (`consultas.py`
 | # | Padrão | Propósito | Resultado real |
 |---|---|---|---|
 | 1.1 | `(S, None, None)` | Ficha completa do T. rex | 13 fatos: Tyrannosauridae, 12,3 m, 8,4 t, 1905, carnívoro, Cretáceo Superior, Hell Creek, Osborn, 3 presas |
-| 1.2 | `(None, P, None)` | Espécie → formação onde foi encontrada | 19 pares, um por espécie |
-| 1.3 | `(None, None, O)` | Tudo que referencia o Cretáceo Superior | 9 espécies via `viveuEm` + 5 formações via `formacaoDatadaEm` |
-| 1.4 | `(S, P, None)` em laço | Linhagem de Tyrannosauridae até Dinossauro | Tyrannosauridae › Theropoda › Saurischia › Dinossauro |
-| 1.5 | `(None, P, O)` | Espécies descritas por Othniel Marsh | Allosaurus 1877, Diplodocus 1878, Stegosaurus 1887, Triceratops 1889, Edmontosaurus 1892 |
+| 1.2 | `(None, P, None)` | Espécie → formação onde foi encontrada | 63 pares, um por espécie |
+| 1.3 | `(None, None, O)` | Tudo que referencia o Cretáceo Superior | 26 espécies via `viveuEm` + 13 formações via `formacaoDatadaEm` |
+| 1.4 | `(S, P, None)` em laço | Linhagem de Tyrannosauridae até Dinossauro | Tyrannosauridae › Coelurosauria › Theropoda › Saurischia › Dinossauro |
+| 1.5 | `(None, P, O)` | Espécies descritas por Othniel Marsh | 8 espécies, de Allosaurus e Apatosaurus (1877) a Edmontosaurus (1892) |
 | 1.6 | `(None, rdf:type, O)` | Propriedades transitivas e funcionais da ontologia | transitiva: `subperiodoDe`; funcionais: as 5 |
 | 1.7 | `(S, P, O) in g` | Verificação de fatos pontuais | Spinosaurus viveu no Cretáceo Superior: `True`; T. rex no Jurássico Superior: `False` |
 
@@ -160,7 +172,7 @@ Exemplo de comentário e de laço (1.4), subindo a hierarquia sem SPARQL:
 # 1.4 Sujeito e predicado fixos (S, P, None).
 # Busca: a cadeia de superclasses de Tyrannosauridae, subindo um nivel
 # por vez com (classe, rdfs:subClassOf, None).
-# Esperado: Tyrannosauridae > Theropoda > Saurischia > Dinossauro.
+# Esperado: Tyrannosauridae > Coelurosauria > Theropoda > Saurischia > Dinossauro.
 cadeia, atual = [DINO.Tyrannosauridae], DINO.Tyrannosauridae
 while True:
     superclasses = [o for _, _, o in g.triples((atual, RDFS.subClassOf, None))]
@@ -174,14 +186,14 @@ while True:
 
 | # | Tipo | Propósito | Resultado real |
 |---|---|---|---|
-| 2.1 | SELECT + FILTER + ORDER BY | Terópodes com mais de 8 m, do maior ao menor | Spinosaurus 14,0 · Giganotosaurus 12,5 · T. rex 12,3 · Allosaurus 8,5 |
-| 2.2 | SELECT + COUNT/AVG/MAX + GROUP BY | Espécies e massa por período (usa transitividade) | Triássico 3 · Jurássico 4 · Cretáceo 12 |
-| 2.3 | SELECT + subconsulta + GROUP_CONCAT | Linhagem completa das espécies brasileiras | Irritator: Dinossauro > Saurischia > Theropoda > Spinosauridae (e mais 2) |
-| 2.4 | SELECT + UNION | Cadeia alimentar considerando a propriedade inversa | 5 relações, com razão de massa |
-| 2.5 | SELECT + HAVING | Paleontólogos com mais de uma espécie descrita | Marsh 5 (1877–1892) · Osborn 2 · Coria 2 |
+| 2.1 | SELECT + FILTER + ORDER BY | Terópodes com mais de 8 m, do maior ao menor | 10 espécies: Spinosaurus 14,0 · Giganotosaurus 12,5 · T. rex 12,3 · ... · Allosaurus 8,5 |
+| 2.2 | SELECT + COUNT/AVG/MAX + GROUP BY | Espécies e massa por período (usa transitividade) | Triássico 9 · Jurássico 16 · Cretáceo 38 |
+| 2.3 | SELECT + subconsulta + GROUP_CONCAT | Linhagem completa das espécies brasileiras | Austroposeidon: Dinossauro > Saurischia > Sauropodomorpha > Sauropoda > Titanosauria (e mais 7) |
+| 2.4 | SELECT + UNION | Cadeia alimentar considerando a propriedade inversa | 7 relações, com razão de massa; Deinonychus → Tenontosaurus vem só da inversa `presaDe` |
+| 2.5 | SELECT + HAVING | Paleontólogos com mais de uma espécie descrita | 13 nomes: Marsh 8 (1877–1892) · Osborn 5 · Coria 3 · Lambe 3 · ... |
 | 2.6 | ASK | T. rex e Stegosaurus coexistiram? | `false` (Cretáceo vs Jurássico) |
-| 2.7 | ASK | Existe dinossauro brasileiro do Triássico? | `true` (Staurikosaurus e Saturnalia, Formação Santa Maria) |
-| 2.8 | CONSTRUCT | Materializa `viveuEm` para época, período e era | 18 triplas (6 ornitísquios × época, período, Mesozoico) |
+| 2.7 | ASK | Existe dinossauro brasileiro do Triássico? | `true` (5 espécies, formações Santa Maria e Caturrita) |
+| 2.8 | CONSTRUCT | Materializa `viveuEm` para época, período e era | 51 triplas (17 ornitísquios × época, período, Mesozoico) |
 | 2.9 | INSERT DATA | Adiciona Oxalaia quilombensis (Brasil, 2011) | Spinosauridae: 2 → 3 espécies, +16 triplas |
 | 2.10 | DELETE/INSERT | Dieta dos Spinosauridae vira "piscivoro" (Ibrahim et al. 2014, 2020) | Irritator, Oxalaia, Spinosaurus: carnivoro → piscivoro |
 | 2.11 | DELETE DATA | Remove predação T. rex → Ankylosaurus, sem evidência fóssil | presas do T. rex: 3 → 2, −1 tripla |
@@ -199,9 +211,9 @@ GROUP BY ?periodo ?inicio ORDER BY DESC(?inicio)
 
 | Período | Espécies | Massa média (t) | Massa máx. (t) |
 |---|---|---|---|
-| Triássico | 3 | 0,1 | 0,35 |
-| Jurássico | 4 | 14,2 | 35,0 |
-| Cretáceo | 12 | 10 | 70,0 |
+| Triássico | 9 | 0,2 | 0,9 |
+| Jurássico | 16 | 8,3 | 35,0 |
+| Cretáceo | 38 | 6,9 | 70,0 |
 
 Nenhuma espécie declara `viveuEm Cretaceo` diretamente; a contagem por período só funciona porque `subperiodoDe*` sobe da época ao período.
 
@@ -222,6 +234,8 @@ ORDER BY ?predador ?presa
 | Predador | Presa | Razão de massa |
 |---|---|---|
 | Allosaurus | Stegosaurus | 0,34 |
+| Deinonychus | Tenontosaurus | 0,07 |
+| Majungasaurus | Rapetosaurus | 0,11 |
 | T. rex | Ankylosaurus | 1,4 |
 | T. rex | Edmontosaurus | 1,4 |
 | T. rex | Triceratops | 0,93 |
@@ -251,7 +265,7 @@ O 2.10 também altera o Oxalaia inserido no 2.9, porque o `WHERE` pega qualquer 
 
 </details>
 
-Cada update imprime o estado **antes e depois** e a variação no número de triplas. A última linha da saída resume: **495 triplas no início, 510 após os updates**. Os updates atuam só no grafo em memória; o `.ttl` não é alterado, então a execução é reproduzível.
+Cada update imprime o estado **antes e depois** e a variação no número de triplas. A última linha da saída resume: **1169 triplas no início, 1184 após os updates**. Os updates atuam só no grafo em memória; o `.ttl` não é alterado, então a execução é reproduzível.
 
 ## O rdflib não raciocina: como as consultas compensam
 

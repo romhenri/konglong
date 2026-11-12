@@ -78,7 +78,7 @@ def parte1(g):
         print(f"  {nome(g, p):<22} -> {nome(g, o)}")
 
     # 1.2 predicado fixo: onde cada especie foi encontrada.
-    # sao 19 pares, um por especie.
+    # sao 63 pares, um por especie.
     cabecalho("1.2", "g.triples((None, encontradoEm, None)): especie -> formacao")
     pares = sorted((nome(g, s), nome(g, o)) for s, _, o in g.triples((None, DINO.encontradoEm, None)))
     for s, o in pares:
@@ -92,7 +92,7 @@ def parte1(g):
         print(f"  {nome(g, s):<28} {nome(g, p)}")
 
     # 1.4 sujeito e predicado fixos: sobe a hierarquia um nivel por vez.
-    # deve sair tyrannosauridae > theropoda > saurischia > dinossauro.
+    # deve sair tyrannosauridae > coelurosauria > theropoda > saurischia > dinossauro.
     cabecalho("1.4", "g.triples((classe, rdfs:subClassOf, None)) em laco: linhagem de Tyrannosauridae")
     cadeia, atual = [DINO.Tyrannosauridae], DINO.Tyrannosauridae
     while True:
@@ -104,7 +104,7 @@ def parte1(g):
     print("  " + " > ".join(nome(g, c) for c in cadeia))
 
     # 1.5 predicado e objeto fixos: especies descritas por marsh,
-    # um dos lados da "guerra dos ossos". sao cinco.
+    # um dos lados da "guerra dos ossos". sao oito.
     cabecalho("1.5", "g.triples((None, descritoPor, OthnielMarsh)): especies descritas por Marsh")
     for s, _, _ in sorted(g.triples((None, DINO.descritoPor, DINO.OthnielMarsh))):
         print(f"  {g.value(s, DINO.nomeCientifico)} ({g.value(s, DINO.anoDescricao)})")
@@ -221,7 +221,7 @@ ASK {
 
 A2 = """
 # tem dinossauro brasileiro do triassico?
-# sim: staurikosaurus e saturnalia, da formacao santa maria.
+# sim: cinco, nas formacoes santa maria e caturrita (rio grande do sul).
 ASK {
     ?d dino:encontradoEm/dino:localizadaEm dino:Brasil ;
        dino:viveuEm/dino:subperiodoDe* dino:Triassico .
