@@ -1,4 +1,4 @@
-"""Mini-Projeto 3: consultas rdflib e SPARQL sobre a base dinossauros.ttl."""
+"""consultas com rdflib e sparql na base dinossauros.ttl."""
 
 from pathlib import Path
 
@@ -21,7 +21,7 @@ def cabecalho(numero, proposito):
 
 
 def nome(g, termo):
-    """rdfs:label do termo, ou o nome local da URI, ou o literal."""
+    """devolve o label do termo; sem label, usa o final da uri."""
     rotulo = g.value(termo, RDFS.label)
     if rotulo is not None:
         return str(rotulo)
@@ -38,7 +38,7 @@ def imprimir_select(resultado):
 
 
 def estatisticas(g):
-    """Confere os minimos exigidos pelo roteiro."""
+    """confere se a base atinge os minimos pedidos no roteiro."""
     classes = set(g.subjects(RDF.type, OWL.Class))
     obj = set(g.subjects(RDF.type, OWL.ObjectProperty))
     dados = set(g.subjects(RDF.type, OWL.DatatypeProperty))
@@ -68,40 +68,31 @@ def estatisticas(g):
         print(f"    - {k}: {v}")
 
 
-# =====================================================================
-# PARTE 1: consultas com g.triples()
-# =====================================================================
+# parte 1: consultas com g.triples()
 
 def parte1(g):
-    # 1.1 Sujeito fixo (S, None, None).
-    # Busca: todos os fatos sobre o Tyrannosaurus rex.
-    # Esperado: tipo Tyrannosauridae, label, nome cientifico, medidas, ano 1905,
-    # dieta, viveuEm Cretaceo Superior, Hell Creek, Osborn e 3 presas.
+    # 1.1 sujeito fixo: tudo o que a base sabe sobre o t. rex.
+    # deve aparecer a classe, medidas, ano 1905, hell creek, osborn e 3 presas.
     cabecalho("1.1", "g.triples((T. rex, None, None)): ficha completa do T. rex")
     for _, p, o in g.triples((DINO.Tyrannosaurus_rex, None, None)):
         print(f"  {nome(g, p):<22} -> {nome(g, o)}")
 
-    # 1.2 Predicado fixo (None, P, None).
-    # Busca: em qual formacao geologica cada especie foi encontrada.
-    # Esperado: 19 pares especie -> formacao (uma por especie).
+    # 1.2 predicado fixo: onde cada especie foi encontrada.
+    # sao 19 pares, um por especie.
     cabecalho("1.2", "g.triples((None, encontradoEm, None)): especie -> formacao")
     pares = sorted((nome(g, s), nome(g, o)) for s, _, o in g.triples((None, DINO.encontradoEm, None)))
     for s, o in pares:
         print(f"  {s:<18} -> {o}")
     print(f"  ({len(pares)} pares)")
 
-    # 1.3 Objeto fixo (None, None, O).
-    # Busca: tudo que aponta para o Cretaceo Superior, com qualquer predicado.
-    # Esperado: especies (viveuEm), formacoes (formacaoDatadaEm) e nenhum
-    # subperiodo (o Cretaceo Superior e uma folha da escala).
+    # 1.3 objeto fixo: quem aponta para o cretaceo superior.
+    # aparecem especies e formacoes; nenhum subperiodo, porque ele e uma folha.
     cabecalho("1.3", "g.triples((None, None, CretaceoSuperior)): quem referencia o Cretaceo Superior")
     for s, p, _ in sorted(g.triples((None, None, DINO.CretaceoSuperior))):
         print(f"  {nome(g, s):<28} {nome(g, p)}")
 
-    # 1.4 Sujeito e predicado fixos (S, P, None).
-    # Busca: a cadeia de superclasses de Tyrannosauridae, subindo um nivel
-    # por vez com (classe, rdfs:subClassOf, None).
-    # Esperado: Tyrannosauridae > Theropoda > Saurischia > Dinossauro.
+    # 1.4 sujeito e predicado fixos: sobe a hierarquia um nivel por vez.
+    # deve sair tyrannosauridae > theropoda > saurischia > dinossauro.
     cabecalho("1.4", "g.triples((classe, rdfs:subClassOf, None)) em laco: linhagem de Tyrannosauridae")
     cadeia, atual = [DINO.Tyrannosauridae], DINO.Tyrannosauridae
     while True:
@@ -112,27 +103,21 @@ def parte1(g):
         cadeia.append(atual)
     print("  " + " > ".join(nome(g, c) for c in cadeia))
 
-    # 1.5 Predicado e objeto fixos (None, P, O).
-    # Busca: especies descritas por Othniel Marsh (protagonista da "Guerra
-    # dos Ossos").
-    # Esperado: Allosaurus, Diplodocus, Stegosaurus, Triceratops, Edmontosaurus.
+    # 1.5 predicado e objeto fixos: especies descritas por marsh,
+    # um dos lados da "guerra dos ossos". sao cinco.
     cabecalho("1.5", "g.triples((None, descritoPor, OthnielMarsh)): especies descritas por Marsh")
     for s, _, _ in sorted(g.triples((None, DINO.descritoPor, DINO.OthnielMarsh))):
         print(f"  {g.value(s, DINO.nomeCientifico)} ({g.value(s, DINO.anoDescricao)})")
 
-    # 1.6 Predicado e objeto fixos sobre o esquema (None, rdf:type, X).
-    # Busca: propriedades declaradas transitivas e funcionais na ontologia.
-    # Esperado: transitiva = subperiodoDe; funcionais = localizadaEm,
-    # nomeCientifico, anoDescricao, inicioMa, fimMa.
+    # 1.6 mesma ideia, agora no esquema: quais propriedades sao
+    # transitivas (so subperiodoDe) e quais sao funcionais (cinco).
     cabecalho("1.6", "g.triples((None, rdf:type, owl:Transitive/FunctionalProperty)): semantica OWL declarada")
     for tipo in (OWL.TransitiveProperty, OWL.FunctionalProperty):
         props = sorted(nome(g, s) for s, _, _ in g.triples((None, RDF.type, tipo)))
         print(f"  {tipo.split('#')[-1]}: {', '.join(props)}")
 
-    # 1.7 Tripla totalmente fixa (S, P, O) via operador `in`.
-    # Busca: verificar fatos pontuais.
-    # Esperado: Spinosaurus viveu no Cretaceo Superior = True;
-    # T. rex viveu no Jurassico Superior = False.
+    # 1.7 tripla completa com `in`: so checa se o fato existe.
+    # o spinosaurus no cretaceo da true; o t. rex no jurassico da false.
     cabecalho("1.7", "(S, P, O) in g: verificacao de fatos pontuais")
     for tripla in [
         (DINO.Spinosaurus_aegyptiacus, DINO.viveuEm, DINO.CretaceoSuperior),
@@ -141,17 +126,14 @@ def parte1(g):
         print(f"  {nome(g, tripla[0])} viveuEm {nome(g, tripla[2])}? {tripla in g}")
 
 
-# =====================================================================
-# PARTE 2: consultas SPARQL
-# =====================================================================
+# parte 2: consultas sparql
 
-# Padrao recorrente: "?x rdf:type/rdfs:subClassOf* dino:Theropoda" faz a
-# inferencia de subclasse que o rdflib sozinho nao faz; e
-# "dino:viveuEm/dino:subperiodoDe*" aplica a transitividade de
-# subperiodoDe (e a cadeia de propriedades declarada em viveuEm).
+# o rdflib nao faz inferencia sozinho, entao as consultas usam caminhos:
+# "rdf:type/rdfs:subClassOf*" cobre as subclasses e
+# "dino:viveuEm/dino:subperiodoDe*" cobre a transitividade dos periodos.
 
 S1 = """
-# Teropodes com mais de 8 m, do maior para o menor (FILTER + ORDER BY).
+# teropodes com mais de 8 m, do maior para o menor.
 SELECT ?nome ?clado ?comprimento ?massa WHERE {
     ?d rdf:type ?c ;
        dino:nomeCientifico ?nome ;
@@ -165,9 +147,8 @@ ORDER BY DESC(?comprimento)
 """
 
 S2 = """
-# Especies por periodo geologico, com massa media e a maior especie
-# (agregacao + transitividade: as especies apontam para epocas, e o
-# periodo e alcancado por subperiodoDe*).
+# quantas especies por periodo, com massa media e maxima.
+# as especies apontam para epocas; o periodo vem pelo subperiodoDe*.
 SELECT ?periodo (COUNT(?d) AS ?especies) (ROUND(AVG(?m) * 10) / 10 AS ?massaMedia) (MAX(?m) AS ?massaMax)
 WHERE {
     ?d dino:viveuEm/dino:subperiodoDe* ?p ;
@@ -181,10 +162,9 @@ ORDER BY DESC(?inicio)
 """
 
 S3 = """
-# Linhagem completa de cada especie brasileira: todos os clados acima da
-# classe direta, ate Dinossauro (taxonomia profunda via subClassOf*).
-# A subconsulta calcula a profundidade de cada clado para que o
-# GROUP_CONCAT saia ordenado da raiz para a folha.
+# linhagem completa de cada especie brasileira, ate dinossauro.
+# a subconsulta mede a profundidade de cada clado para o group_concat
+# sair em ordem, da raiz para a folha.
 SELECT ?nome ?formacao (GROUP_CONCAT(?cladoNome; separator=" > ") AS ?linhagem)
 WHERE {
     {
@@ -207,9 +187,8 @@ ORDER BY ?nome
 """
 
 S4 = """
-# Relacoes predador-presa, aceitando o fato declarado em qualquer uma
-# das direcoes (predouSobre ou sua inversa presaDe), ja que o rdflib nao
-# materializa owl:inverseOf. Mostra tambem a razao de massa.
+# quem caca quem, com a razao de massa entre predador e presa.
+# o union pega as duas direcoes porque o rdflib ignora owl:inverseOf.
 SELECT ?predador ?presa (ROUND(?mp / ?mq * 100) / 100 AS ?razaoMassa) WHERE {
     { ?a dino:predouSobre ?b } UNION { ?b dino:presaDe ?a }
     ?a dino:nomeCientifico ?predador ; dino:massaToneladas ?mp .
@@ -219,8 +198,7 @@ ORDER BY ?predador ?presa
 """
 
 S5 = """
-# Paleontologos com mais de uma especie descrita (agregacao + HAVING),
-# com o intervalo de anos das descricoes.
+# paleontologos com mais de uma especie descrita e o intervalo de anos.
 SELECT ?paleontologo (COUNT(?d) AS ?especies) (MIN(?ano) AS ?primeira) (MAX(?ano) AS ?ultima)
 WHERE {
     ?d dino:descritoPor ?p ; dino:anoDescricao ?ano .
@@ -232,8 +210,8 @@ ORDER BY DESC(?especies)
 """
 
 A1 = """
-# T. rex e Stegosaurus compartilharam algum periodo geologico?
-# Esperado: false (Cretaceo vs Jurassico; ~80 milhoes de anos de distancia).
+# o t. rex e o stegosaurus viveram no mesmo periodo?
+# nao: um e do cretaceo, o outro do jurassico, uns 80 milhoes de anos antes.
 ASK {
     dino:Tyrannosaurus_rex   dino:viveuEm/dino:subperiodoDe* ?p .
     dino:Stegosaurus_stenops dino:viveuEm/dino:subperiodoDe* ?p .
@@ -242,8 +220,8 @@ ASK {
 """
 
 A2 = """
-# Existe algum dinossauro brasileiro do Triassico (um dos mais antigos)?
-# Esperado: true (Staurikosaurus e Saturnalia, Formacao Santa Maria).
+# tem dinossauro brasileiro do triassico?
+# sim: staurikosaurus e saturnalia, da formacao santa maria.
 ASK {
     ?d dino:encontradoEm/dino:localizadaEm dino:Brasil ;
        dino:viveuEm/dino:subperiodoDe* dino:Triassico .
@@ -251,9 +229,8 @@ ASK {
 """
 
 C1 = """
-# Materializa a cadeia owl:propertyChainAxiom de viveuEm:
-# para cada especie, gera viveuEm para TODOS os intervalos que contem a
-# epoca declarada (epoca, periodo e era).
+# gera as triplas que a cadeia de viveuEm implica: cada ornitisquio
+# passa a ter viveuEm na epoca, no periodo e na era.
 CONSTRUCT { ?d dino:viveuEm ?intervalo }
 WHERE {
     ?d dino:viveuEm/dino:subperiodoDe* ?intervalo .
@@ -271,8 +248,8 @@ ORDER BY ?nome
 """
 
 U1 = """
-# INSERT: registra Oxalaia quilombensis (Kellner et al., 2011), o maior
-# espinossaurideo do Brasil, e a Formacao Alcantara (MA) onde foi achado.
+# adiciona o oxalaia, maior espinossaurideo do brasil (kellner, 2011),
+# e a formacao alcantara, no maranhao, onde ele foi achado.
 INSERT DATA {
     dino:Alcantara a dino:FormacaoGeologica ;
         rdfs:label "Formacao Alcantara"@pt ;
@@ -291,9 +268,8 @@ INSERT DATA {
 """
 
 U2 = """
-# DELETE/INSERT: estudos de Ibrahim et al. (2014, 2020) indicam que
-# espinossaurideos eram especializados em peixes. Troca a dieta de TODOS
-# os Spinosauridae (inclusive o Oxalaia recem-inserido) para "piscivoro".
+# ibrahim (2014, 2020) mostrou que espinossaurideos comiam peixe.
+# troca a dieta de todos eles, incluindo o oxalaia, para "piscivoro".
 DELETE { ?d dino:dieta ?antiga }
 INSERT { ?d dino:dieta "piscivoro" }
 WHERE {
@@ -308,9 +284,8 @@ ORDER BY ?presa
 """
 
 U3 = """
-# DELETE: remove a predacao T. rex -> Ankylosaurus, por nao haver
-# evidencia fossil direta (marca de mordida ou conteudo estomacal);
-# a base so deve conter predacoes documentadas.
+# tira a predacao t. rex -> ankylosaurus: nao ha marca de mordida nem
+# conteudo estomacal que comprove. a base so guarda predacao documentada.
 DELETE DATA {
     dino:Tyrannosaurus_rex dino:predouSobre dino:Ankylosaurus_magniventris .
 }
