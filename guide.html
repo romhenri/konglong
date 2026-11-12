@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia de Campo do Mesozoico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F2F4F1;--surface:#FFFFFF;--surface2:#E8ECE7;--ink:#15201B;--muted:#56625B;--line:#D5DCD6;
+  --accent:#1F5E8C;--accent-soft:#DCE8F1;--bad:#A33A2B;--bad-soft:#F6E0DC;
+  --g-theropoda:#B5452F;--g-theropoda-soft:#F6E3DD;
+  --g-sauropodomorpha:#2B7546;--g-sauropodomorpha-soft:#DCEEE1;
+  --g-ornithischia:#1F5E8C;--g-ornithischia-soft:#DCE8F1;
+  --g-basal:#7A6A4F;--g-basal-soft:#EEE8DC;
+  --p-triassico:#C9A27E;--p-jurassico:#7FAF8E;--p-cretaceo:#8FB3CF;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#2A3631;
+  --accent:#86B7DE;--accent-soft:#1C2E3B;--bad:#EE8B7B;--bad-soft:#3A1F1A;
+  --g-theropoda:#EE8B7B;--g-theropoda-soft:#3A221C;
+  --g-sauropodomorpha:#72C48F;--g-sauropodomorpha-soft:#173022;
+  --g-ornithischia:#86B7DE;--g-ornithischia-soft:#1C2E3B;
+  --g-basal:#CDB894;--g-basal-soft:#2E281D;
+  --p-triassico:#8A6A4C;--p-jurassico:#4F7A5D;--p-cretaceo:#4E6F88;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1412;--surface:#161F1B;--surface2:#1D2823;--ink:#E4EBE6;--muted:#9AA8A0;--line:#2A3631;
+  --accent:#86B7DE;--accent-soft:#1C2E3B;--bad:#EE8B7B;--bad-soft:#3A1F1A;
+  --g-theropoda:#EE8B7B;--g-theropoda-soft:#3A221C;
+  --g-sauropodomorpha:#72C48F;--g-sauropodomorpha-soft:#173022;
+  --g-ornithischia:#86B7DE;--g-ornithischia-soft:#1C2E3B;
+  --g-basal:#CDB894;--g-basal-soft:#2E281D;
+  --p-triassico:#8A6A4C;--p-jurassico:#4F7A5D;--p-cretaceo:#4E6F88;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;display:flex;flex-direction:column}
+.mono,code{font-family:"JetBrains Mono",ui-monospace,monospace}
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;
+  padding:14px max(16px,3vw);border-bottom:1px solid var(--line);background:var(--surface)}
+header h1{font-size:20px;margin:0}
+header p{margin:2px 0 0;color:var(--muted);font-size:14px}
+header nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+header nav a{color:var(--accent);font-size:14px;font-weight:600;text-decoration:none;padding:4px 8px;border-radius:8px}
+header nav a:hover{background:var(--accent-soft)}
+.chip{font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--surface2);color:var(--muted);white-space:nowrap}
+main{flex:1;min-height:0;display:grid;grid-template-columns:340px minmax(0,1fr);gap:16px;padding:16px max(16px,3vw)}
+@media (max-width:860px){main{grid-template-columns:minmax(0,1fr)}#lista{max-height:38vh}}
+aside{display:flex;flex-direction:column;gap:10px;min-height:0}
+.filtros{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.filtros input[type=search]{grid-column:1/-1}
+input,select,button{font:inherit;font-size:14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px;min-width:0}
+button{cursor:pointer}
+button:hover{background:var(--surface2)}
+.filtros label{grid-column:1/-1;display:flex;gap:8px;align-items:center;font-size:14px;cursor:pointer}
+#contagem{font-size:13px;color:var(--muted);margin:0}
+#lista{flex:1;min-height:0;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;margin:0;list-style:none}
+#lista li button{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;text-align:left;border:0;border-radius:8px;padding:7px 8px;background:none}
+#lista li button:hover{background:var(--surface2)}
+#lista li button[aria-current="true"]{background:var(--accent-soft)}
+#lista .num{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted)}
+#lista .nm{display:flex;flex-direction:column;min-width:0}
+#lista .nm b{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#lista .nm i{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pinta{width:10px;height:10px;border-radius:50%}
+#ficha{min-height:0;overflow:auto}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.topo{padding:18px 20px 16px;border-bottom:1px solid var(--line);background:var(--g-soft);display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;justify-content:space-between}
+.topo .numero{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--g);font-size:14px}
+.topo h2{margin:2px 0 0;font-size:28px;line-height:1.15}
+.topo .cientifico{font-style:italic;color:var(--muted);font-size:16px}
+.topo .badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.badge{font-size:12.5px;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--g);border:1px solid var(--g)}
+.badge.neutro{color:var(--muted);border-color:var(--line)}
+.navs{display:flex;gap:6px}
+.corpo{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (max-width:640px){.corpo{grid-template-columns:minmax(0,1fr)}.corpo>.secao{border-left:0!important}}
+.corpo>.secao:nth-child(even of :not([style])){border-left:1px solid var(--line)}
+.secao{padding:16px 20px;border-bottom:1px solid var(--line)}
+.secao h3{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+.linhagem{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:14px}
+.linhagem span.sep{color:var(--muted)}
+.linhagem .atual{font-weight:700;color:var(--g)}
+dl.fatos{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}
+dl.fatos dt{color:var(--muted)}
+dl.fatos dd{margin:0}
+.medida{margin-bottom:14px}
+.medida .rot{display:flex;justify-content:space-between;font-size:14px;margin-bottom:6px}
+.medida .rot b{font-family:"JetBrains Mono",monospace;font-weight:600}
+.trilho{height:10px;border-radius:999px;background:var(--surface2);position:relative;overflow:hidden}
+.trilho .cheio{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--g)}
+.nota{font-size:12.5px;color:var(--muted);margin:6px 0 0}
+svg text{fill:var(--muted);font:12px Inter,system-ui,sans-serif}
+.tempo{position:relative;height:34px;border-radius:8px;overflow:hidden;display:flex}
+.tempo div{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--ink)}
+.tempo .marca{position:absolute;top:0;bottom:0;border:2px solid var(--ink);border-radius:6px;background:color-mix(in srgb,var(--ink) 12%,transparent)}
+.escala{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:4px;font-family:"JetBrains Mono",monospace}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.link{border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:999px;padding:3px 10px;font-size:13px;cursor:pointer}
+.link:hover{background:var(--accent-soft)}
+.vazio{color:var(--muted);font-size:13.5px;margin:0}
+.err{background:var(--bad-soft);color:var(--bad);border-radius:10px;padding:12px 14px;font-size:14px}
+.hint{color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Guia de Campo do Mesozoico</h1>
+    <p>Uma ficha por espécie, montada com SPARQL sobre <code>dinossauros.ttl</code>.</p>
+  </div>
+  <nav>
+    <span id="st" class="chip">carregando…</span>
+    <a href="demo.html">Demo SPARQL</a>
+    <a href="graph.html">Grafo</a>
+  </nav>
+</header>
+
+<main>
+  <aside>
+    <div class="filtros">
+      <input id="busca" type="search" placeholder="Buscar por nome…" aria-label="Buscar espécie" disabled>
+      <select id="f-grupo" aria-label="Filtrar por grupo" disabled><option value="">Todos os grupos</option></select>
+      <select id="f-periodo" aria-label="Filtrar por período" disabled><option value="">Todos os períodos</option></select>
+      <label><input type="checkbox" id="f-brasil" disabled> Só espécies do Brasil</label>
+    </div>
+    <p id="contagem"></p>
+    <ul id="lista" aria-label="Espécies"></ul>
+  </aside>
+  <section id="ficha" aria-live="polite"></section>
+</main>
+
+<script type="module">
+import init, * as ox from "https://cdn.jsdelivr.net/npm/oxigraph@0.5.10/web.js";
+
+const DINO = "http://example.org/dino#";
+const PREFIXOS = `PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dino: <${DINO}>
+`;
+// grupos de cor: o primeiro destes clados que aparecer na linhagem decide
+const GRUPOS = [
+  { id: "theropoda", clado: DINO + "Theropoda", nome: "Terópodes" },
+  { id: "sauropodomorpha", clado: DINO + "Sauropodomorpha", nome: "Sauropodomorfos" },
+  { id: "ornithischia", clado: DINO + "Ornithischia", nome: "Ornitísquios" },
+  { id: "basal", clado: null, nome: "Basais e incertos" },
+];
+const HUMANO_M = 1.75, HUMANO_T = 0.07, ELEFANTE_T = 6;
+const MESO_INI = 251.9, MESO_FIM = 66.0;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const num = (v, d = 2) => Number(v).toLocaleString("pt-BR", { maximumFractionDigits: d });
+const DIETA = { carnivoro: "carnívoro", herbivoro: "herbívoro", onivoro: "onívoro" };
+function pelaChave(h) {
+  const k = decodeURIComponent(h.replace(/^#/, "")).toLowerCase();
+  return k ? especies.find((e) => e.chave.toLowerCase() === k || e.chave.toLowerCase().startsWith(k + "_")) : undefined;
+}
+const local = (uri) => uri.slice(uri.lastIndexOf("#") + 1);
+
+let especies = [];               // ordenadas: mais antiga primeiro
+const porId = new Map();
+let periodos = [];
+let filtradas = [];
+let atual = null;
+
+function consultar(store, corpo) {
+  return store.query(PREFIXOS + corpo).map((linha) => {
+    const o = {};
+    for (const [k, v] of linha) o[k] = v.value;
+    return o;
+  });
+}
+
+function montar(texto) {
+  const store = new ox.Store();
+  store.load(texto, { format: "text/turtle", base_iri: "http://example.org/dino" });
+
+  const rotulo = new Map(consultar(store, `SELECT ?x ?l WHERE { ?x rdfs:label ?l }`).map((r) => [r.x, r.l]));
+  const superDe = new Map(consultar(store, `SELECT ?c ?s WHERE { ?c rdfs:subClassOf ?s . FILTER(isIRI(?s)) }`).map((r) => [r.c, r.s]));
+  const intervalo = new Map(consultar(store, `SELECT ?i ?ini ?fim ?sup WHERE {
+      ?i dino:inicioMa ?ini ; dino:fimMa ?fim . OPTIONAL { ?i dino:subperiodoDe ?sup } }`)
+    .map((r) => [r.i, { ini: +r.ini, fim: +r.fim, sup: r.sup }]));
+  periodos = consultar(store, `SELECT ?p ?ini ?fim WHERE { ?p a dino:Periodo ; dino:inicioMa ?ini ; dino:fimMa ?fim } ORDER BY DESC(?ini)`)
+    .map((r) => ({ id: r.p, nome: rotulo.get(r.p), ini: +r.ini, fim: +r.fim }));
+
+  const autores = new Map();
+  for (const r of consultar(store, `SELECT ?d ?p WHERE { ?d dino:descritoPor ?p }`)) {
+    if (!autores.has(r.d)) autores.set(r.d, []);
+    autores.get(r.d).push(rotulo.get(r.p) ?? local(r.p));
+  }
+  // predacao nas duas direcoes, como a consulta 2.4
+  const predacao = consultar(store, `SELECT DISTINCT ?a ?b WHERE { { ?a dino:predouSobre ?b } UNION { ?b dino:presaDe ?a } }`);
+
+  const linhas = consultar(store, `SELECT ?d ?label ?nome ?comp ?massa ?ano ?dieta ?ep ?classe ?f ?pais WHERE {
+      ?d dino:nomeCientifico ?nome ; rdfs:label ?label ; a ?classe ;
+         dino:comprimentoMetros ?comp ; dino:massaToneladas ?massa ;
+         dino:anoDescricao ?ano ; dino:dieta ?dieta ;
+         dino:viveuEm ?ep ; dino:encontradoEm ?f .
+      ?f dino:localizadaEm ?pais .
+    }`);
+
+  especies = linhas.map((r) => {
+    const linhagem = [];
+    for (let c = r.classe; c; c = superDe.get(c)) linhagem.unshift(c);
+    const grupo = GRUPOS.find((g) => g.clado && linhagem.includes(g.clado)) ?? GRUPOS[GRUPOS.length - 1];
+    const ep = intervalo.get(r.ep);
+    return {
+      id: r.d, chave: local(r.d), label: r.label, nome: r.nome,
+      comp: +r.comp, massa: +r.massa, ano: +r.ano, dieta: r.dieta,
+      epoca: { id: r.ep, nome: rotulo.get(r.ep), ...ep },
+      periodo: ep?.sup, formacao: { id: r.f, nome: rotulo.get(r.f) },
+      pais: { id: r.pais, nome: rotulo.get(r.pais) },
+      linhagem: linhagem.map((c) => ({ id: c, nome: rotulo.get(c) ?? local(c) })),
+      grupo, autores: autores.get(r.d) ?? [],
+      preda: predacao.filter((p) => p.a === r.d).map((p) => p.b),
+      presaDe: predacao.filter((p) => p.b === r.d).map((p) => p.a),
+    };
+  }).sort((a, b) => b.epoca.ini - a.epoca.ini || a.ano - b.ano || a.nome.localeCompare(b.nome));
+
+  porId.clear();
+  especies.forEach((e, i) => { e.n = i + 1; porId.set(e.id, e); });
+
+  $("f-grupo").innerHTML = `<option value="">Todos os grupos</option>` +
+    GRUPOS.map((g) => `<option value="${g.id}">${esc(g.nome)}</option>`).join("");
+  $("f-periodo").innerHTML = `<option value="">Todos os períodos</option>` +
+    periodos.map((p) => `<option value="${esc(p.id)}">${esc(p.nome)}</option>`).join("");
+  ["busca", "f-grupo", "f-periodo", "f-brasil"].forEach((id) => { $(id).disabled = false; });
+  $("st").textContent = `${especies.length} espécies · ${store.size} triplas`;
+
+  filtrar();
+  mostrar(pelaChave(location.hash) ?? especies[0]);
+}
+
+function filtrar() {
+  const termo = $("busca").value.trim().toLowerCase();
+  const grupo = $("f-grupo").value, periodo = $("f-periodo").value, brasil = $("f-brasil").checked;
+  filtradas = especies.filter((e) =>
+    (!termo || e.label.toLowerCase().includes(termo) || e.nome.toLowerCase().includes(termo)) &&
+    (!grupo || e.grupo.id === grupo) &&
+    (!periodo || e.periodo === periodo) &&
+    (!brasil || e.pais.id === DINO + "Brasil"));
+  $("contagem").textContent = `${filtradas.length} de ${especies.length} espécies`;
+  $("lista").innerHTML = filtradas.map((e) => `<li><button data-id="${esc(e.id)}"${e === atual ? ' aria-current="true"' : ""}>
+      <span class="num">${String(e.n).padStart(3, "0")}</span>
+      <span class="nm"><b>${esc(e.label)}</b><i>${esc(e.nome)}</i></span>
+      <span class="pinta" style="background:var(--g-${e.grupo.id})" title="${esc(e.grupo.nome)}"></span>
+    </button></li>`).join("") || `<li class="hint" style="padding:10px">Nenhuma espécie com esses filtros.</li>`;
+}
+
+function barra(frac) {
+  return `<div class="trilho"><div class="cheio" style="width:${Math.max(2, Math.min(100, frac * 100)).toFixed(1)}%"></div></div>`;
+}
+
+function comparacaoTamanho(e) {
+  const W = 320, maior = Math.max(e.comp, HUMANO_M), esc_ = (W - 70) / maior;
+  const hW = HUMANO_M * esc_, dW = e.comp * esc_;
+  return `<svg viewBox="0 0 ${W} 64" width="100%" role="img" aria-label="${esc(e.label)} com ${num(e.comp)} m ao lado de um humano de 1,75 m">
+    <rect x="0" y="6" width="${dW.toFixed(1)}" height="16" rx="8" fill="var(--g)"/>
+    <text x="${(dW + 6).toFixed(1)}" y="19">${num(e.comp, 1)} m</text>
+    <rect x="0" y="38" width="${hW.toFixed(1)}" height="16" rx="8" fill="var(--muted)" opacity=".55"/>
+    <text x="${(hW + 6).toFixed(1)}" y="51">humano 1,75 m</text>
+  </svg>`;
+}
+
+function fracLog(v) {
+  const min = Math.log10(Math.min(...especies.map((x) => x.massa)));
+  const max = Math.log10(Math.max(...especies.map((x) => x.massa)));
+  return (Math.log10(v) - min) / (max - min || 1);
+}
+
+function equivalencia(t) {
+  if (t >= ELEFANTE_T / 2) return `≈ ${num(t / ELEFANTE_T, 1)} elefante(s)-africano(s) de 6 t`;
+  if (t >= HUMANO_T) return `≈ ${num(t / HUMANO_T, 0)} pessoas de 70 kg`;
+  return `≈ ${num(t * 1000, 1)} kg, menos que uma pessoa`;
+}
+
+function linhaDoTempo(e) {
+  const total = MESO_INI - MESO_FIM;
+  const seg = periodos.map((p) => {
+    const cls = p.id.endsWith("Triassico") ? "triassico" : p.id.endsWith("Jurassico") ? "jurassico" : "cretaceo";
+    return `<div style="flex:${(p.ini - p.fim).toFixed(1)};background:var(--p-${cls})">${esc(p.nome)}</div>`;
+  }).join("");
+  const esq = ((MESO_INI - e.epoca.ini) / total) * 100, larg = ((e.epoca.ini - e.epoca.fim) / total) * 100;
+  return `<div class="tempo">${seg}<span class="marca" style="left:${esq.toFixed(2)}%;width:${larg.toFixed(2)}%" title="${esc(e.epoca.nome)}"></span></div>
+    <div class="escala"><span>${num(MESO_INI, 1)} Ma</span><span>${num(MESO_FIM, 1)} Ma</span></div>
+    <p class="nota">${esc(e.epoca.nome)}: de ${num(e.epoca.ini, 1)} a ${num(e.epoca.fim, 1)} milhões de anos atrás.</p>`;
+}
+
+function links(ids) {
+  const itens = ids.map((id) => porId.get(id)).filter(Boolean);
+  if (!itens.length) return `<p class="vazio">Nenhuma.</p>`;
+  return `<div class="links">${itens.map((x) => `<button class="link" data-id="${esc(x.id)}">${esc(x.label)}</button>`).join("")}</div>`;
+}
+
+function mostrar(e) {
+  if (!e) return;
+  atual = e;
+  history.replaceState(null, "", "#" + encodeURIComponent(e.chave));
+  for (const b of document.querySelectorAll("#lista button[data-id]")) {
+    if (b.dataset.id === e.id) { b.setAttribute("aria-current", "true"); b.scrollIntoView({ block: "nearest" }); }
+    else b.removeAttribute("aria-current");
+  }
+
+  const mesmaFormacao = especies.filter((x) => x !== e && x.formacao.id === e.formacao.id).map((x) => x.id);
+  const mesmaEpoca = especies.filter((x) => x !== e && x.epoca.id === e.epoca.id && x.formacao.id !== e.formacao.id).map((x) => x.id);
+  const predador = e.preda.length > 0;
+  const i = filtradas.indexOf(e);
+
+  $("ficha").innerHTML = `<article class="card" style="--g:var(--g-${e.grupo.id});--g-soft:var(--g-${e.grupo.id}-soft)">
+    <div class="topo">
+      <div>
+        <div class="numero">Nº ${String(e.n).padStart(3, "0")}</div>
+        <h2>${esc(e.label)}</h2>
+        <div class="cientifico">${esc(e.nome)}</div>
+        <div class="badges">
+          <span class="badge">${esc(e.grupo.nome)}</span>
+          <span class="badge neutro">${esc(DIETA[e.dieta] ?? e.dieta)}</span>
+          ${e.pais.id === DINO + "Brasil" ? `<span class="badge neutro">brasileiro</span>` : ""}
+          ${predador ? `<span class="badge" title="Inferido pela classe definida Predador (∃ predouSobre.Dinossauro)">Predador</span>` : ""}
+        </div>
+      </div>
+      <div class="navs">
+        <button id="ant" ${i <= 0 ? "disabled" : ""} aria-label="Espécie anterior">←</button>
+        <button id="prox" ${i < 0 || i >= filtradas.length - 1 ? "disabled" : ""} aria-label="Próxima espécie">→</button>
+      </div>
+    </div>
+    <div class="corpo">
+      <div class="secao" style="grid-column:1/-1">
+        <h3>Linhagem</h3>
+        <div class="linhagem">${e.linhagem.map((c, k) =>
+          `${k ? '<span class="sep">›</span>' : ""}<span class="${k === e.linhagem.length - 1 ? "atual" : ""}">${esc(c.nome)}</span>`).join("")}</div>
+      </div>
+      <div class="secao">
+        <h3>Medidas</h3>
+        <div class="medida">
+          <div class="rot"><span>Comprimento</span><b>${num(e.comp, 2)} m</b></div>
+          ${comparacaoTamanho(e)}
+        </div>
+        <div class="medida">
+          <div class="rot"><span>Massa</span><b>${num(e.massa, 4)} t</b></div>
+          ${barra(fracLog(e.massa))}
+          <p class="nota">${equivalencia(e.massa)}. Escala logarítmica, da menor à maior massa da base.</p>
+        </div>
+      </div>
+      <div class="secao">
+        <h3>Registro</h3>
+        <dl class="fatos">
+          <dt>Formação</dt><dd>${esc(e.formacao.nome)}</dd>
+          <dt>País</dt><dd>${esc(e.pais.nome)}</dd>
+          <dt>Descrito em</dt><dd>${e.ano}</dd>
+          <dt>Descrito por</dt><dd>${esc(e.autores.join(", "))}</dd>
+          <dt>Dieta</dt><dd>${esc(DIETA[e.dieta] ?? e.dieta)}</dd>
+        </dl>
+      </div>
+      <div class="secao" style="grid-column:1/-1">
+        <h3>Quando viveu</h3>
+        ${linhaDoTempo(e)}
+      </div>
+      <div class="secao">
+        <h3>Predou sobre</h3>${links(e.preda)}
+        <h3 style="margin-top:14px">Presa de</h3>${links(e.presaDe)}
+      </div>
+      <div class="secao">
+        <h3>Mesma formação</h3>${links(mesmaFormacao)}
+        <h3 style="margin-top:14px">Mesma época, outras formações</h3>${links(mesmaEpoca)}
+      </div>
+    </div>
+  </article>`;
+}
+
+function vizinho(passo) {
+  const i = filtradas.indexOf(atual);
+  if (i >= 0 && filtradas[i + passo]) mostrar(filtradas[i + passo]);
+}
+
+document.addEventListener("click", (ev) => {
+  const alvo = ev.target.closest("[data-id]");
+  if (alvo) return mostrar(porId.get(alvo.dataset.id));
+  if (ev.target.closest("#ant")) vizinho(-1);
+  if (ev.target.closest("#prox")) vizinho(1);
+});
+document.addEventListener("keydown", (ev) => {
+  if (ev.target.matches("input,select")) return;
+  if (ev.key === "ArrowRight" || ev.key === "ArrowDown") { ev.preventDefault(); vizinho(1); }
+  if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") { ev.preventDefault(); vizinho(-1); }
+});
+["busca", "f-grupo", "f-periodo", "f-brasil"].forEach((id) => $(id).addEventListener("input", () => {
+  filtrar();
+  if (filtradas.length && !filtradas.includes(atual)) mostrar(filtradas[0]);
+}));
+addEventListener("hashchange", () => {
+  const e = pelaChave(location.hash);
+  if (e && e !== atual) mostrar(e);
+});
+
+function pedirArquivo(msg) {
+  $("st").textContent = "base não carregada";
+  $("ficha").innerHTML = `<div class="err">${esc(msg)}</div>
+    <p class="hint">Rode <code>python3 -m http.server</code> na pasta do projeto e abra <code>http://localhost:8000/guide.html</code>, ou selecione o arquivo abaixo.</p>
+    <input type="file" accept=".ttl" id="arquivo">`;
+  $("arquivo").addEventListener("change", async (ev) => {
+    const f = ev.target.files[0];
+    if (f) montar(await f.text());
+  });
+}
+
+try {
+  await init();
+} catch (e) {
+  pedirArquivo(`Não foi possível carregar o Oxigraph (precisa de internet): ${e.message || e}`);
+  throw e;
+}
+try {
+  const r = await fetch("dinossauros.ttl");
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  montar(await r.text());
+} catch (e) {
+  pedirArquivo("Não consegui ler dinossauros.ttl automaticamente (abrir o HTML direto do disco bloqueia essa leitura).");
+}
+</script>
+</body>
+</html>

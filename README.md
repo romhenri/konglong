@@ -306,6 +306,12 @@ python3 -m http.server     # na pasta do projeto
 
 Diferença em relação ao `consultas.py`: na 2.4, a razão de massa é calculada em `xsd:double`, porque o Oxigraph perde precisão nessa conta com `xsd:decimal`. Os resultados são os mesmos.
 
+### Guia de campo
+
+`guide.html` mostra a base como um catálogo de fichas, uma por espécie, numeradas da mais antiga para a mais recente. Cada ficha é montada com consultas SPARQL (também via Oxigraph) e traz linhagem por clados, comprimento comparado a um humano, massa em escala logarítmica, a época numa linha do tempo do Mesozoico, formação, país, quem descreveu e quando, além de links para presas, predadores e espécies da mesma formação ou época. Dá para buscar pelo nome, filtrar por grupo, período ou espécies brasileiras, e navegar com as setas do teclado. O link `guide.html#Irritator` abre direto na ficha da espécie.
+
+Sirva a pasta do mesmo jeito e abra `http://localhost:8000/guide.html`.
+
 ## Arquivos
 
 | Arquivo | Conteúdo |
@@ -313,6 +319,7 @@ Diferença em relação ao `consultas.py`: na 2.4, a razão de massa é calculad
 | `dinossauros.ttl` | Ontologia (classes, propriedades, axiomas OWL) e indivíduos |
 | `consultas.py` | Carrega o `.ttl` e executa todas as consultas |
 | `demo.html` | Demo interativa: editor SPARQL e consultas prontas no navegador |
+| `guide.html` | Guia de campo: uma ficha por espécie, com busca e filtros |
 | `requirements.txt` | Dependência (`rdflib`) |
 | `Mini_Projeto_03_-_Roteiro.pdf` | Enunciado do projeto |
 
