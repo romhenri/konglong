@@ -11,3 +11,4 @@ learning-records/
 
 # enunciado do projeto, fica so local
 *.pdf
+.DS_Store
